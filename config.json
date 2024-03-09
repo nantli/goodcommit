@@ -1,0 +1,16 @@
+{
+    "activeModules": [
+        {
+        "name": "types",
+        "page": 1,
+        "position": 1,
+        "active": true
+        },
+        {
+        "name": "scope",
+        "page": 1,
+        "position": 2,
+        "active": true
+        }
+    ]
+}
