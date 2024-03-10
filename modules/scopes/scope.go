@@ -18,6 +18,7 @@ type commitScope struct {
 	Emoji       string   `json:"emoji"`
 	Description string   `json:"description"`
 	Types       []string `json:"types"`
+	ID          string   `json:"id"`
 }
 
 type Scopes struct {
@@ -52,6 +53,10 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 		if slices.Contains(i.Types, commit.Type) {
 			typeOptions = append(typeOptions, huh.NewOption(i.Emoji+"\t- "+i.Name, i.Name))
 		}
+	}
+
+	if len(typeOptions) == 0 {
+		return nil, fmt.Errorf("no valid scope options found for commit type: %s", commit.Type)
 	}
 
 	return huh.NewSelect[string]().

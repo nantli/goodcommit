@@ -5,14 +5,23 @@
             "page": 1,
             "position": 1,
             "active": true,
-            "path": "commit_types.json"
+            "path": "commit_types.json",
+            "checkpoint": true
+        },
+        {
+            "name": "breaking",
+            "page": 2,
+            "position": 2,
+            "active": true,
+            "checkpoint": true
         },
         {
             "name": "scopes",
-            "page": 1,
-            "position": 2,
+            "page": 2,
+            "position": 1,
             "active": true,
-            "path": "commit_scopes.json"
+            "path": "commit_scopes.json",
+            "checkpoint": true
         }
     ]
 }

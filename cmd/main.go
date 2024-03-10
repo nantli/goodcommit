@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -13,66 +14,68 @@ import (
 )
 
 func main() {
+	// Should we run in accessible mode?
+	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 	var commit module.CommitInfo
-	var typeGroup *huh.Group
 	var groups []*huh.Group
 
 	// Load modules from configuration
 	modules := config.LoadConfig()
 
-	// Build type huh group, to be the first form to run
+	modulesByPage := make(map[int][]*module.Module)
+	// Iterate over the modules and add them to the map
 	for _, m := range modules {
-		if m.GetConfig().Name != "types" {
-			continue
-		}
-		field, err := m.NewField(&commit)
-		if err != nil {
-			fmt.Println("Uh oh:", err)
-			os.Exit(1)
-		}
-
-		typeGroup = huh.NewGroup(field)
+		page := m.GetConfig().Page
+		modulesByPage[page] = append(modulesByPage[page], &m)
 	}
 
-	// Should we run in accessible mode?
-	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
+	for page := range modulesByPage {
+		// Sort the modules by position
+		sort.Slice(modulesByPage[page], func(i, j int) bool {
+			return (*modulesByPage[page][i]).GetConfig().Position < (*modulesByPage[page][j]).GetConfig().Position
+		})
 
-	preTypeForm := huh.NewForm(
-		typeGroup,
-	).
+		var fields []huh.Field
+		// Add the fields from the modules to the group
+		for _, m := range modulesByPage[page] {
+			field, err := (*m).NewField(&commit)
+			if err != nil {
+				fmt.Println("Uh oh:", err)
+				os.Exit(1)
+			}
+			fields = append(fields, field)
+		}
+
+		group := huh.NewGroup(fields...)
+		groups = append(groups, group)
+
+		// Check if any module in the page has the checkpoint set to true
+		for _, m := range modulesByPage[page] {
+			if (*m).GetConfig().Checkpoint {
+				// Create the form with the current groups
+				form := huh.NewForm(groups...).
+					WithTheme(huh.ThemeCharm()).
+					WithAccessible(accessible)
+
+				// Run the form and check for errors
+				if err := form.Run(); err != nil {
+					fmt.Println("Uh oh:", err)
+					os.Exit(1)
+				}
+
+				// Start a new set of groups for the next pages
+				groups = []*huh.Group{}
+				break
+			}
+		}
+	}
+
+	// Create and run the form with the remaining groups
+	form := huh.NewForm(groups...).
 		WithTheme(huh.ThemeCharm()).
 		WithAccessible(accessible)
 
-	err := preTypeForm.Run()
-
-	if err != nil {
-		fmt.Println("Uh oh:", err)
-		os.Exit(1)
-	}
-
-	// Build post type huh groups
-	for _, m := range modules {
-		if m.GetConfig().Name == "types" {
-			continue
-		}
-		field, err := m.NewField(&commit)
-		if err != nil {
-			fmt.Println("Uh oh:", err)
-			os.Exit(1)
-		}
-
-		groups = append(groups, huh.NewGroup(field))
-	}
-
-	postTypeForm := huh.NewForm(
-		groups...,
-	).
-		WithTheme(huh.ThemeCharm()).
-		WithAccessible(accessible)
-
-	err = postTypeForm.Run()
-
-	if err != nil {
+	if err := form.Run(); err != nil {
 		fmt.Println("Uh oh:", err)
 		os.Exit(1)
 	}
