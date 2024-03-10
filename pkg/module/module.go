@@ -3,12 +3,13 @@ package module
 import "github.com/charmbracelet/huh"
 
 type Config struct {
-	Page     int    `json:"page"`
-	Position int    `json:"position"`
-	Name     string `json:"name"`
-	Active   bool   `json:"active"`
-	Path     string `json:"path,omitempty"`
-	Priority int    `json:"priority"`
+	Page       int    `json:"page"`
+	Position   int    `json:"position"`
+	Name       string `json:"name"`
+	Active     bool   `json:"active"`
+	Path       string `json:"path,omitempty"`
+	Priority   int    `json:"priority"`
+	Checkpoint bool   `json:"checkpoint"`
 }
 
 type Module interface {
