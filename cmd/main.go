@@ -8,18 +8,53 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/nantli/goodcommit/config"
-	"github.com/nantli/goodcommit/module"
+	"github.com/nantli/goodcommit/internal/config"
+	"github.com/nantli/goodcommit/pkg/module"
 )
 
 func main() {
 	var commit module.CommitInfo
+	var typeGroup *huh.Group
+	var groups []*huh.Group
 
 	// Load modules from configuration
 	modules := config.LoadConfig()
-	var groups []*huh.Group
 
+	// Build type huh group, to be the first form to run
 	for _, m := range modules {
+		if m.GetConfig().Name != "types" {
+			continue
+		}
+		field, err := m.NewField(&commit)
+		if err != nil {
+			fmt.Println("Uh oh:", err)
+			os.Exit(1)
+		}
+
+		typeGroup = huh.NewGroup(field)
+	}
+
+	// Should we run in accessible mode?
+	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
+
+	preTypeForm := huh.NewForm(
+		typeGroup,
+	).
+		WithTheme(huh.ThemeCharm()).
+		WithAccessible(accessible)
+
+	err := preTypeForm.Run()
+
+	if err != nil {
+		fmt.Println("Uh oh:", err)
+		os.Exit(1)
+	}
+
+	// Build post type huh groups
+	for _, m := range modules {
+		if m.GetConfig().Name == "types" {
+			continue
+		}
 		field, err := m.NewField(&commit)
 		if err != nil {
 			fmt.Println("Uh oh:", err)
@@ -29,18 +64,30 @@ func main() {
 		groups = append(groups, huh.NewGroup(field))
 	}
 
-	// Should we run in accessible mode?
-	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
-
-	form := huh.NewForm(
+	postTypeForm := huh.NewForm(
 		groups...,
-	).WithAccessible(accessible)
+	).
+		WithTheme(huh.ThemeCharm()).
+		WithAccessible(accessible)
 
-	err := form.Run()
+	err = postTypeForm.Run()
 
 	if err != nil {
 		fmt.Println("Uh oh:", err)
 		os.Exit(1)
+	}
+
+	// Post process commit from lower to higher priority
+	for i := 0; i < 100; i++ {
+		for _, m := range modules {
+			if m.GetConfig().Priority > i {
+				continue
+			}
+			if err := m.PostProcess(&commit); err != nil {
+				fmt.Println("Uh oh:", err)
+				os.Exit(1)
+			}
+		}
 	}
 
 	// Print commit summary

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nantli/goodcommit/module"
-	"github.com/nantli/goodcommit/module/scope"
-	"github.com/nantli/goodcommit/module/types"
+	"github.com/nantli/goodcommit/modules/scopes"
+	"github.com/nantli/goodcommit/modules/types"
+	"github.com/nantli/goodcommit/pkg/module"
 )
 
 type Config struct {
@@ -33,17 +33,27 @@ func LoadConfig() []module.Module {
 			continue
 		}
 		switch mc.Name {
-		case scope.MODULE_NAME:
-			m, err := scope.New(mc)
+		case scopes.MODULE_NAME:
+			m, err := scopes.New(mc)
 			if err != nil {
-				fmt.Printf("Error initializing %s module: %s\n", scope.MODULE_NAME, err)
+				fmt.Printf("Error initializing %s module: %s\n", scopes.MODULE_NAME, err)
+				os.Exit(1)
+			}
+			err = m.Load()
+			if err != nil {
+				fmt.Printf("Error loading %s module configuration: %s\n", scopes.MODULE_NAME, err)
 				os.Exit(1)
 			}
 			cfg.Modules = append(cfg.Modules, m)
 		case types.MODULE_NAME:
 			m, err := types.New(mc)
 			if err != nil {
-				fmt.Printf("Error initializing %s module: %s\n", scope.MODULE_NAME, err)
+				fmt.Printf("Error initializing %s module: %s\n", types.MODULE_NAME, err)
+				os.Exit(1)
+			}
+			err = m.Load()
+			if err != nil {
+				fmt.Printf("Error loading %s module configuration: %s\n", types.MODULE_NAME, err)
 				os.Exit(1)
 			}
 			cfg.Modules = append(cfg.Modules, m)

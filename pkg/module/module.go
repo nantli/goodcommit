@@ -7,10 +7,15 @@ type Config struct {
 	Position int    `json:"position"`
 	Name     string `json:"name"`
 	Active   bool   `json:"active"`
+	Path     string `json:"path,omitempty"`
+	Priority int    `json:"priority"`
 }
 
 type Module interface {
+	Load() error
 	NewField(commit *CommitInfo) (huh.Field, error)
+	PostProcess(commit *CommitInfo) error
+	GetConfig() Config
 }
 
 type CommitInfo struct {
