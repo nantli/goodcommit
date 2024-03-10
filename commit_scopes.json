@@ -1,0 +1,82 @@
+{
+    "scopes": [
+        {
+            "emoji": "🪅",
+            "name": "Generic",
+            "description": "Use it for everything else",
+            "types": ["feat","chore"]
+        },
+        {
+            "emoji": "🚑",
+            "name": "Generic",
+            "description": "Use it for every fix",
+            "types": ["fix"]
+        },
+        {
+            "emoji": "👗",
+            "name": "Frontend",
+            "description": "Use this when working on user facing tasks e.g. Websites and Mobile apps",
+            "types": ["feat", "fix"]
+        },
+        {
+            "emoji": "📺",
+            "name": "Backend",
+            "description": "Use this for non user facing tasks e.g. Servers and APIs",
+            "types": ["feat", "fix"]
+        },
+        {
+            "emoji": "📦",
+            "name": "Persistence",
+            "description": "Use this for tasks related to databases and other persistence layers",
+            "types": ["feat", "fix"]
+        },
+        {
+            "emoji": "🏎️",
+            "name": "Performance",
+            "description": "Use it for performance improvements",
+            "types": ["feat"]
+        },
+        {
+            "emoji": "🏗️",
+            "name": "Infrastructure",
+            "description": "Use this for anything related to infrastructure e.g. Terraform, Kubernetes",
+            "types": ["feat","fix","chore"]
+        },
+        {
+            "emoji": "🚧",
+            "name": "WIP",
+            "description": "Use it when you need to commit but your work is still in progress",
+            "types": ["chore"]
+        },
+        {
+            "emoji": "💻",
+            "name": "Developer Experience",
+            "description": "Use it when improving the workflow for developers working on this repository",
+            "types": ["chore"]
+        },
+        {
+            "emoji": "🔍",
+            "name": "Discoverability",
+            "description": "Use it when maintaining and updating discoverability e.g. README.md",
+            "types": ["chore"]
+        },
+        {
+            "emoji": "📚",
+            "name": "Documentation",
+            "description": "Use it for everything Documentation",
+            "types": ["chore"]
+        },
+        {
+            "emoji": "🛠️",
+            "name": "Configuration",
+            "description": "Use it when modifying configuration files e.g. package.json",
+            "types": ["chore"]
+        },
+        {
+            "emoji": "🌵",
+            "name": "WHY",
+            "description": "Use it for tasks having to do with Purpose Development",
+            "types": ["chore"]
+        }
+    ]
+}

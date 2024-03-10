@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -9,105 +8,89 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/nantli/goodcommit/internal/config"
+	"github.com/nantli/goodcommit/pkg/module"
 )
 
-type CommitInfo struct {
-	Type         string
-	Scope        string
-	Description  string
-	Body         string
-	Footer       string
-	Breaking     bool
-	CoAuthoredBy string
-}
-
 func main() {
-	var commit CommitInfo
+	var commit module.CommitInfo
+	var typeGroup *huh.Group
+	var groups []*huh.Group
 
-	commitTypes := []string{"feat", "fix", "chore"}
-	commitScopes := []string{"core", "ui", "docs"}
-	contributors := []string{"Diego", "Arturo", "Marcos"}
+	// Load modules from configuration
+	modules := config.LoadConfig()
+
+	// Build type huh group, to be the first form to run
+	for _, m := range modules {
+		if m.GetConfig().Name != "types" {
+			continue
+		}
+		field, err := m.NewField(&commit)
+		if err != nil {
+			fmt.Println("Uh oh:", err)
+			os.Exit(1)
+		}
+
+		typeGroup = huh.NewGroup(field)
+	}
 
 	// Should we run in accessible mode?
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 
-	form := huh.NewForm(
-		huh.NewGroup(huh.NewNote().
-			Title("GOODCOMMIT").
-			Description("Helping you craft the perfect commit message.")),
+	preTypeForm := huh.NewForm(
+		typeGroup,
+	).
+		WithTheme(huh.ThemeCharm()).
+		WithAccessible(accessible)
 
-		// Commit type and scope group.
-		huh.NewGroup(
-			// Select commit type.
-			huh.NewSelect[string]().
-				Options(huh.NewOptions(commitTypes...)...).
-				Title("Commit type").
-				Description("Select the type of change that you're committing.").
-				Value(&commit.Type),
-
-			// Select commit scope.
-			huh.NewSelect[string]().
-				Options(huh.NewOptions(commitScopes...)...).
-				Title("Commit scope").
-				Description("Select the scope of the change.").
-				Value(&commit.Scope),
-		),
-
-		// Commit description and body group.
-		huh.NewGroup(
-			// Input commit description.
-			huh.NewInput().
-				Value(&commit.Description).
-				Title("Short description").
-				Placeholder("Add a short description of the change.").
-				Validate(func(s string) error {
-					if len(s) == 0 {
-						return errors.New("description is required")
-					}
-					return nil
-				}),
-
-			// Input commit body.
-			huh.NewText().
-				Value(&commit.Body).
-				Title("Commit body").
-				Description("Provide a more detailed description of the change.").
-				Lines(5),
-		),
-
-		// Commit Footer group.
-		huh.NewGroup(
-			// Input commit footer.
-			huh.NewText().
-				Value(&commit.Footer).
-				Title("Commit footer").
-				Description("Add any references to issues or note breaking changes.").
-				Lines(3),
-
-			// Confirm if the change is breaking.
-			huh.NewConfirm().
-				Title("Is this a BREAKING CHANGE?").
-				Value(&commit.Breaking).
-				Affirmative("Yes").
-				Negative("No"),
-
-			// Select co-author.
-			huh.NewSelect[string]().
-				Options(huh.NewOptions(contributors...)...).
-				Title("Co-authored by").
-				Description("Select a contributor if this commit was co-authored.").
-				Value(&commit.CoAuthoredBy),
-		),
-	).WithAccessible(accessible)
-
-	err := form.Run()
+	err := preTypeForm.Run()
 
 	if err != nil {
 		fmt.Println("Uh oh:", err)
 		os.Exit(1)
 	}
 
-	// Print commit summary.
+	// Build post type huh groups
+	for _, m := range modules {
+		if m.GetConfig().Name == "types" {
+			continue
+		}
+		field, err := m.NewField(&commit)
+		if err != nil {
+			fmt.Println("Uh oh:", err)
+			os.Exit(1)
+		}
+
+		groups = append(groups, huh.NewGroup(field))
+	}
+
+	postTypeForm := huh.NewForm(
+		groups...,
+	).
+		WithTheme(huh.ThemeCharm()).
+		WithAccessible(accessible)
+
+	err = postTypeForm.Run()
+
+	if err != nil {
+		fmt.Println("Uh oh:", err)
+		os.Exit(1)
+	}
+
+	// Post process commit from lower to higher priority
+	for i := 0; i < 100; i++ {
+		for _, m := range modules {
+			if m.GetConfig().Priority > i {
+				continue
+			}
+			if err := m.PostProcess(&commit); err != nil {
+				fmt.Println("Uh oh:", err)
+				os.Exit(1)
+			}
+		}
+	}
+
+	// Print commit summary
 	{
 		var sb strings.Builder
 		keywordStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700"))

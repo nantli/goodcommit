@@ -1,0 +1,18 @@
+{
+    "activeModules": [
+        {
+            "name": "types",
+            "page": 1,
+            "position": 1,
+            "active": true,
+            "path": "commit_types.json"
+        },
+        {
+            "name": "scopes",
+            "page": 1,
+            "position": 2,
+            "active": true,
+            "path": "commit_scopes.json"
+        }
+    ]
+}
