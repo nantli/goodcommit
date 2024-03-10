@@ -1,9 +1,6 @@
 package breaking
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/charmbracelet/huh"
 	"github.com/nantli/goodcommit/pkg/module"
 )
@@ -28,10 +25,6 @@ func (s *Breaking) NewField(commit *module.CommitInfo) (huh.Field, error) {
 }
 
 func (s *Breaking) PostProcess(commit *module.CommitInfo) error {
-	if commit.Scope == "" {
-		return fmt.Errorf("commit breaking is required")
-	}
-	commit.Scope = strings.ToLower(commit.Scope)
 	return nil
 }
 

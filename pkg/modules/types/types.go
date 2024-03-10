@@ -11,15 +11,9 @@ import (
 
 const MODULE_NAME = "types"
 
-type commitType struct {
-	Name        string `json:"name"`
-	Title       string `jCon:"title"`
-	Description string `json:"description"`
-}
-
 type Types struct {
 	config module.Config
-	Items  []commitType `json:"types"`
+	Items  []module.Item `json:"types"`
 }
 
 func (s *Types) Load() error {
@@ -67,5 +61,5 @@ func (s *Types) GetConfig() module.Config {
 }
 
 func New(config module.Config) (module.Module, error) {
-	return &Types{config, []commitType{}}, nil
+	return &Types{config, []module.Item{}}, nil
 }

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nantli/goodcommit/modules/breaking"
-	"github.com/nantli/goodcommit/modules/scopes"
-	"github.com/nantli/goodcommit/modules/types"
 	"github.com/nantli/goodcommit/pkg/module"
+	"github.com/nantli/goodcommit/pkg/modules/breaking"
+	"github.com/nantli/goodcommit/pkg/modules/scopes"
+	"github.com/nantli/goodcommit/pkg/modules/types"
 )
 
 type Config struct {
@@ -18,7 +18,7 @@ type Config struct {
 
 func LoadConfig() []module.Module {
 	var cfg Config
-	raw, err := os.ReadFile("config.json")
+	raw, err := os.ReadFile("./configs/config.example.json")
 	if err != nil {
 		fmt.Println("Error occurred while reading config:", err)
 		os.Exit(1)

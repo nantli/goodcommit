@@ -12,6 +12,15 @@ type Config struct {
 	Checkpoint bool   `json:"checkpoint"`
 }
 
+type Item struct {
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Emoji       string   `json:"emoji"`
+	Conditional []string `json:"conditional"`
+}
+
 type Module interface {
 	Load() error
 	NewField(commit *CommitInfo) (huh.Field, error)

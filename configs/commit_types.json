@@ -1,18 +1,24 @@
 {
     "types": [
         {
+            "id": "feat",
             "name": "feat",
-            "title": "New feature 🌟",
+            "emoji": "🌟",
+            "title": "New feature",
             "description": "Correlates with MINOR in Semantic Versioning"
         },
         {
+            "id": "fix",
             "name": "fix",
-            "title": "This commit patches a bug 🐛",
+            "emoji": "🐛",
+            "title": "This commit patches a bug",
             "description": "Correlates with PATCH in Semantic Versioning"
         },
         {
+            "id": "chore",
             "name": "chore",
-            "title": "For all other tasks 🧰",
+            "emoji": "🧰",
+            "title": "For all other tasks",
             "description": "For commits not adding features nor fixing anything"
         }
     ]

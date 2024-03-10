@@ -5,7 +5,7 @@
             "page": 1,
             "position": 1,
             "active": true,
-            "path": "commit_types.json",
+            "path": "./configs/commit_types.json",
             "checkpoint": true
         },
         {
@@ -20,7 +20,7 @@
             "page": 2,
             "position": 1,
             "active": true,
-            "path": "commit_scopes.json",
+            "path": "./configs/commit_scopes.json",
             "checkpoint": true
         }
     ]

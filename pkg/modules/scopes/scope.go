@@ -13,17 +13,9 @@ import (
 
 const MODULE_NAME = "scopes"
 
-type commitScope struct {
-	Name        string   `json:"name"`
-	Emoji       string   `json:"emoji"`
-	Description string   `json:"description"`
-	Types       []string `json:"types"`
-	ID          string   `json:"id"`
-}
-
 type Scopes struct {
 	config module.Config
-	Items  []commitScope `json:"scopes"`
+	Items  []module.Item `json:"scopes"`
 }
 
 func (s *Scopes) Load() error {
@@ -50,7 +42,7 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
 	for _, i := range s.Items {
-		if slices.Contains(i.Types, commit.Type) {
+		if slices.Contains(i.Conditional, commit.Type) {
 			typeOptions = append(typeOptions, huh.NewOption(i.Emoji+"\t- "+i.Name, i.Name))
 		}
 	}
@@ -79,5 +71,5 @@ func (s *Scopes) GetConfig() module.Config {
 }
 
 func New(config module.Config) (module.Module, error) {
-	return &Scopes{config, []commitScope{}}, nil
+	return &Scopes{config, []module.Item{}}, nil
 }
