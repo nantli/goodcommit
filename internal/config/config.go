@@ -34,44 +34,28 @@ func LoadConfig() []module.Module {
 			continue
 		}
 		switch mc.Name {
-		case scopes.MODULE_NAME:
-			m, err := scopes.New(mc)
-			if err != nil {
-				fmt.Printf("Error initializing %s module: %s\n", scopes.MODULE_NAME, err)
-				os.Exit(1)
-			}
-			err = m.Load()
-			if err != nil {
-				fmt.Printf("Error loading %s module configuration: %s\n", scopes.MODULE_NAME, err)
-				os.Exit(1)
-			}
-			cfg.Modules = append(cfg.Modules, m)
 		case types.MODULE_NAME:
-			m, err := types.New(mc)
-			if err != nil {
-				fmt.Printf("Error initializing %s module: %s\n", types.MODULE_NAME, err)
-				os.Exit(1)
-			}
-			err = m.Load()
-			if err != nil {
-				fmt.Printf("Error loading %s module configuration: %s\n", types.MODULE_NAME, err)
-				os.Exit(1)
-			}
-			cfg.Modules = append(cfg.Modules, m)
+			cfg.Modules = append(cfg.Modules, initAndLoadModule(types.MODULE_NAME, types.New, mc))
+		case scopes.MODULE_NAME:
+			cfg.Modules = append(cfg.Modules, initAndLoadModule(scopes.MODULE_NAME, scopes.New, mc))
 		case breaking.MODULE_NAME:
-			m, err := breaking.New(mc)
-			if err != nil {
-				fmt.Printf("Error initializing %s module: %s\n", types.MODULE_NAME, err)
-				os.Exit(1)
-			}
-			err = m.Load()
-			if err != nil {
-				fmt.Printf("Error loading %s module configuration: %s\n", types.MODULE_NAME, err)
-				os.Exit(1)
-			}
-			cfg.Modules = append(cfg.Modules, m)
+			cfg.Modules = append(cfg.Modules, initAndLoadModule(breaking.MODULE_NAME, breaking.New, mc))
 		}
 	}
 
 	return cfg.Modules
+}
+
+func initAndLoadModule(name string, newFunc func(mc module.Config) (module.Module, error), mc module.Config) module.Module {
+	m, err := newFunc(mc)
+	if err != nil {
+		fmt.Printf("Error initializing %s module: %s\n", name, err)
+		os.Exit(1)
+	}
+	err = m.Load()
+	if err != nil {
+		fmt.Printf("Error loading %s module configuration: %s\n", name, err)
+		os.Exit(1)
+	}
+	return m
 }

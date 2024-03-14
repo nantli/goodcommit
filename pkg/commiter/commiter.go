@@ -23,8 +23,14 @@ func (c *Commiter) RunForm(accessible bool) error {
 		modulesByPage[page] = append(modulesByPage[page], &m)
 	}
 
-	var groups []*huh.Group
+	var pages []int
 	for page := range modulesByPage {
+		pages = append(pages, page)
+	}
+	sort.Ints(pages) // Sort the pages
+
+	var groups []*huh.Group
+	for _, page := range pages { // Iterate over sorted pages
 		// Sort the modules by position
 		sort.Slice(modulesByPage[page], func(i, j int) bool {
 			return (*modulesByPage[page][i]).GetConfig().Position < (*modulesByPage[page][j]).GetConfig().Position

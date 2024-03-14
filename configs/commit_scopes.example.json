@@ -1,7 +1,7 @@
 {
     "scopes": [
         {
-            "id": "generic",
+            "id": "empty",
             "emoji": "🪅",
             "name": "Empty",
             "description": "Use it for everything else",
