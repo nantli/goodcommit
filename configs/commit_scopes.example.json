@@ -2,7 +2,7 @@
     "scopes": [
         {
             "id": "empty",
-            "emoji": "🪅",
+            "emoji": "🦙",
             "name": "Empty",
             "description": "Use it for everything else",
             "conditional": ["feat","fix", "chore"]

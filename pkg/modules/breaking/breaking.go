@@ -18,9 +18,9 @@ func (s *Breaking) LoadConfig() error {
 func (s *Breaking) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 	return huh.NewConfirm().
-		Title("Are you sure?").
-		Affirmative("Yes!").
-		Negative("No.").
+		Title("🙊・Does this commit introduce a Breaking Change?").
+		Affirmative("Yes 🚨").
+		Negative("No 🏖️").
 		Value(&commit.Breaking), nil
 }
 

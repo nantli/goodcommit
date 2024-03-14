@@ -13,15 +13,13 @@
             "page": 2,
             "position": 2,
             "active": true,
-            "path": "./configs/commit_scopes.example.json",
-            "checkpoint": true
+            "path": "./configs/commit_scopes.example.json"
         },
         {
             "name": "breaking",
             "page": 3,
             "position": 1,
-            "active": true,
-            "checkpoint": true
+            "active": true
         }
     ]
 }

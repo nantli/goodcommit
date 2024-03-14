@@ -43,7 +43,7 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	var typeOptions []huh.Option[string]
 	for _, i := range s.Items {
 		if slices.Contains(i.Conditional, commit.Type) {
-			typeOptions = append(typeOptions, huh.NewOption(i.Emoji+"\t- "+i.Name, i.Name))
+			typeOptions = append(typeOptions, huh.NewOption(commit.Type+"("+i.Emoji+"): "+i.Name+" - "+i.Description, i.Id))
 		}
 	}
 
@@ -53,8 +53,8 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 	return huh.NewSelect[string]().
 		Options(typeOptions...).
-		Title("Commit scope").
-		Description("Select the scope for these changes.").
+		Title("🙉・Select a Commit Scope").
+		Description("Additional contextual information about the changes.").
 		Value(&commit.Scope), nil
 }
 

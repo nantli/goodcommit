@@ -97,7 +97,7 @@ func (c *Commiter) PreviewCommit() {
 	keywordStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700"))
 	fmt.Fprintf(&sb,
 		"%s\n\nType: %s\nScope: %s\n\n%s\n\n%s\n\n%s",
-		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY"),
+		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY 💎"),
 		keywordStyle.Render(c.commit.Type),
 		keywordStyle.Render(c.commit.Scope),
 		keywordStyle.Render(c.commit.Description),

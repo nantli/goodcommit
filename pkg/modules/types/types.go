@@ -40,12 +40,12 @@ func (s *Types) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
 	for _, i := range s.Items {
-		typeOptions = append(typeOptions, huh.NewOption(i.Name+" - "+i.Title, i.Name))
+		typeOptions = append(typeOptions, huh.NewOption(i.Emoji+" "+i.Name+" - "+i.Title, i.Id))
 	}
 	return huh.NewSelect[string]().
 		Options(typeOptions...).
-		Title("Commit type").
-		Description("Select the type of change that you're committing.").
+		Title("🙈・Select a Commit Type").
+		Description("Folowing the Conventional Commits specification.").
 		Value(&commit.Type), nil
 }
 
