@@ -16,7 +16,7 @@ type Types struct {
 	Items  []module.Item `json:"types"`
 }
 
-func (s *Types) Load() error {
+func (s *Types) LoadConfig() error {
 
 	if s.config.Path == "" {
 		return nil
@@ -60,6 +60,22 @@ func (s *Types) GetConfig() module.Config {
 	return s.config
 }
 
-func New(config module.Config) (module.Module, error) {
-	return &Types{config, []module.Item{}}, nil
+func (s *Types) SetConfig(config module.Config) {
+	s.config = config
+}
+
+func (s *Types) Debug() error {
+	// print configuration and items in a human readable format
+	fmt.Println(s.config)
+	fmt.Println(s.Items)
+
+	return nil
+}
+
+func (s *Types) GetName() string {
+	return MODULE_NAME
+}
+
+func New() module.Module {
+	return &Types{config: module.Config{Name: MODULE_NAME}, Items: []module.Item{}}
 }

@@ -22,10 +22,13 @@ type Item struct {
 }
 
 type Module interface {
-	Load() error
+	LoadConfig() error
 	NewField(commit *CommitInfo) (huh.Field, error)
 	PostProcess(commit *CommitInfo) error
 	GetConfig() Config
+	GetName() string
+	SetConfig(config Config)
+	Debug() error
 }
 
 type CommitInfo struct {

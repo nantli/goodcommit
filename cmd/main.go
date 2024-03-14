@@ -7,13 +7,21 @@ import (
 
 	"github.com/nantli/goodcommit/internal/config"
 	"github.com/nantli/goodcommit/pkg/commiter"
+	"github.com/nantli/goodcommit/pkg/module"
+	"github.com/nantli/goodcommit/pkg/modules/breaking"
+	"github.com/nantli/goodcommit/pkg/modules/scopes"
+	"github.com/nantli/goodcommit/pkg/modules/types"
 )
 
 func main() {
-
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 
-	c := commiter.New(config.LoadConfig())
+	modules := []module.Module{types.New(), scopes.New(), breaking.New()}
+
+	// Load configuration for modules
+	modules = config.LoadConfigToModules(modules)
+
+	c := commiter.New(modules)
 
 	if err := c.RunForm(accessible); err != nil {
 		fmt.Println("Error occurred while running form:", err)
@@ -26,5 +34,4 @@ func main() {
 	}
 
 	c.PreviewCommit()
-
 }

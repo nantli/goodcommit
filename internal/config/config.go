@@ -6,17 +6,13 @@ import (
 	"os"
 
 	"github.com/nantli/goodcommit/pkg/module"
-	"github.com/nantli/goodcommit/pkg/modules/breaking"
-	"github.com/nantli/goodcommit/pkg/modules/scopes"
-	"github.com/nantli/goodcommit/pkg/modules/types"
 )
 
 type Config struct {
-	ConfiguredModules []module.Config `json:"activeModules"`
-	Modules           []module.Module
+	ModulesToActivate []module.Config `json:"activeModules"`
 }
 
-func LoadConfig() []module.Module {
+func LoadConfigToModules(modules []module.Module) []module.Module {
 	var cfg Config
 	raw, err := os.ReadFile("./configs/config.example.json")
 	if err != nil {
@@ -29,33 +25,13 @@ func LoadConfig() []module.Module {
 		os.Exit(1)
 	}
 
-	for _, mc := range cfg.ConfiguredModules {
-		if !mc.Active {
-			continue
-		}
-		switch mc.Name {
-		case types.MODULE_NAME:
-			cfg.Modules = append(cfg.Modules, initAndLoadModule(types.MODULE_NAME, types.New, mc))
-		case scopes.MODULE_NAME:
-			cfg.Modules = append(cfg.Modules, initAndLoadModule(scopes.MODULE_NAME, scopes.New, mc))
-		case breaking.MODULE_NAME:
-			cfg.Modules = append(cfg.Modules, initAndLoadModule(breaking.MODULE_NAME, breaking.New, mc))
+	for _, mc := range cfg.ModulesToActivate {
+		for _, m := range modules {
+			if m.GetName() == mc.Name {
+				m.SetConfig(mc)
+				m.LoadConfig()
+			}
 		}
 	}
-
-	return cfg.Modules
-}
-
-func initAndLoadModule(name string, newFunc func(mc module.Config) (module.Module, error), mc module.Config) module.Module {
-	m, err := newFunc(mc)
-	if err != nil {
-		fmt.Printf("Error initializing %s module: %s\n", name, err)
-		os.Exit(1)
-	}
-	err = m.Load()
-	if err != nil {
-		fmt.Printf("Error loading %s module configuration: %s\n", name, err)
-		os.Exit(1)
-	}
-	return m
+	return modules
 }
