@@ -22,15 +22,21 @@
             "path": "./configs/commit_scopes.example.json"
         },
         {
-            "name": "breaking",
+            "name": "description",
             "page": 3,
             "position": 1,
             "active": true
         },
         {
-            "name": "coauthors",
+            "name": "breaking",
             "page": 3,
-            "position": 2,
+            "position": 3,
+            "active": true
+        },
+        {
+            "name": "coauthors",
+            "page": 4,
+            "position": 1,
             "active": true,
             "path": "./configs/commit_coauthors.example.json"
         }

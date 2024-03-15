@@ -10,6 +10,7 @@ import (
 	"github.com/nantli/goodcommit/pkg/module"
 	"github.com/nantli/goodcommit/pkg/modules/breaking"
 	"github.com/nantli/goodcommit/pkg/modules/coauthors"
+	"github.com/nantli/goodcommit/pkg/modules/description"
 	"github.com/nantli/goodcommit/pkg/modules/greetings"
 	"github.com/nantli/goodcommit/pkg/modules/scopes"
 	"github.com/nantli/goodcommit/pkg/modules/types"
@@ -22,6 +23,7 @@ func main() {
 		greetings.New(),
 		types.New(),
 		scopes.New(),
+		description.New(),
 		breaking.New(),
 		coauthors.New(),
 	}
@@ -32,7 +34,7 @@ func main() {
 	c := commiter.New(modules)
 
 	if err := c.RunForm(accessible); err != nil {
-		fmt.Println("Error occurred while running form:", err)
+		fmt.Println("Error occurred while running goodcommit's form:", err)
 		os.Exit(1)
 	}
 

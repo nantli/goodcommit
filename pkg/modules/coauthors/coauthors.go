@@ -36,7 +36,7 @@ func (c *CoAuthors) LoadConfig() error {
 func (c *CoAuthors) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	var coAuthorOptions []huh.Option[string]
 	for _, item := range c.Items {
-		coAuthorOptions = append(coAuthorOptions, huh.NewOption(item.Name, item.Id))
+		coAuthorOptions = append(coAuthorOptions, huh.NewOption(item.Name+" - "+item.Id, item.Name+" <"+item.Id+">"))
 	}
 
 	return huh.NewMultiSelect[string]().
