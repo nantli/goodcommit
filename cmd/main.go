@@ -9,6 +9,7 @@ import (
 	"github.com/nantli/goodcommit/pkg/commiter"
 	"github.com/nantli/goodcommit/pkg/module"
 	"github.com/nantli/goodcommit/pkg/modules/breaking"
+	"github.com/nantli/goodcommit/pkg/modules/greetings"
 	"github.com/nantli/goodcommit/pkg/modules/scopes"
 	"github.com/nantli/goodcommit/pkg/modules/types"
 )
@@ -16,9 +17,14 @@ import (
 func main() {
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 
-	modules := []module.Module{types.New(), scopes.New(), breaking.New()}
+	modules := []module.Module{
+		greetings.New(),
+		types.New(),
+		scopes.New(),
+		breaking.New(),
+	}
 
-	// Load configuration for modules
+	// Load configuration for each module
 	modules = config.LoadConfigToModules(modules)
 
 	c := commiter.New(modules)

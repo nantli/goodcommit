@@ -1,9 +1,15 @@
 {
     "activeModules": [
         {
-            "name": "types",
+            "name": "greetings",
             "page": 1,
             "position": 1,
+            "active": true
+        },
+        {
+            "name": "types",
+            "page": 1,
+            "position": 2,
             "active": true,
             "path": "./configs/commit_types.example.json",
             "checkpoint": true
