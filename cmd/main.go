@@ -5,8 +5,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/nantli/goodcommit/internal/config"
-	"github.com/nantli/goodcommit/pkg/commiter"
+	"github.com/nantli/goodcommit/pkg/commiters/goodcommiter"
+	"github.com/nantli/goodcommit/pkg/config"
+	"github.com/nantli/goodcommit/pkg/goodcommit"
 	"github.com/nantli/goodcommit/pkg/module"
 	"github.com/nantli/goodcommit/pkg/modules/breaking"
 	"github.com/nantli/goodcommit/pkg/modules/coauthors"
@@ -19,6 +20,7 @@ import (
 func main() {
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 
+	// Load modules
 	modules := []module.Module{
 		greetings.New(),
 		types.New(),
@@ -28,20 +30,16 @@ func main() {
 		coauthors.New(),
 	}
 
-	// Load configuration for each module
+	// Update modules with configuration
 	modules = config.LoadConfigToModules(modules)
 
-	c := commiter.New(modules)
+	// Load the default goodcommiter (a goodcommit handler)
+	defaultCommiter := goodcommiter.New(modules)
 
-	if err := c.RunForm(accessible); err != nil {
-		fmt.Println("Error occurred while running goodcommit's form:", err)
+	// Load and execute the goodcommit
+	goodCommit := goodcommit.New(defaultCommiter)
+	if err := goodCommit.Execute(accessible); err != nil {
+		fmt.Println("Error occurred:", err)
 		os.Exit(1)
 	}
-
-	if err := c.RunPostProcessing(); err != nil {
-		fmt.Println("Error occurred while running post processing:", err)
-		os.Exit(1)
-	}
-
-	c.PreviewCommit()
 }

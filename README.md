@@ -61,12 +61,59 @@ Modules in `goodcommit` allow for extensibility and customization of the commit 
    }
    ```
 
-## Creating Your Own Commit Formatting
+## Creating Your Own Commiter
 
-To customize `goodcommit` further, you might want to modify the `commiter` to suit your specific needs. Here's how:
+If using the default commiter is not good enough for you, you can create your own commiter that implements the `Commiter` interface. This allows you to define how the commit form operates, handles input, or processes the final commit message. Here's how:
 
-1. **Modify Commiter**: In `pkg/commiter/commiter.go`, you can add or modify methods to change how the commit form operates, handles input, or processes the final commit message.
+1. **Define Your Commiter**: Create a new Go file in `pkg/commiters/yourcommiter/`. Define a struct that implements the `Commiter` interface from `pkg/commiter/commiter.go`.
 
-2. **Adjust Module Interaction**: If your customization involves new ways modules interact with each other or with the `commiter`, ensure to update those interactions in the respective module files.
+   ```go
+   package yourcommiter
 
-3. **Test Your Changes**: After making modifications, test `goodcommit` thoroughly to ensure your changes work as expected.
+   import "github.com/nantli/goodcommit/pkg/commiter"
+
+   type YourCommiter struct {
+       // Your fields here
+   }
+
+   func (yc *YourCommiter) RunForm(accessible bool) error {
+       // Implement how your commiter runs the form
+   }
+
+   func (yc *YourCommiter) RunPostProcessing() error {
+       // Implement any post-processing steps
+   }
+
+   func (yc *YourCommiter) PreviewCommit() {
+       // Implement how to preview the commit
+   }
+
+   func (yc *YourCommiter) Commit() error {
+       // Implement the commit action
+   }
+   ```
+
+2. **Register Your Commiter**: In your `main.go`, import your commiter and use it when creating a new `GoodCommit` instance.
+
+   ```go:cmd/main.go
+   import (
+       "github.com/nantli/goodcommit/pkg/goodcommit"
+       "github.com/nantli/goodcommit/pkg/commiters/yourcommiter"
+   )
+
+   func main() {
+       // Initialize your commiter
+       yourCommiter := yourcommiter.New()
+       // Create a GoodCommit instance with your commiter
+       goodCommit := goodcommit.New(yourCommiter)
+       // Execute
+       if err := goodCommit.Execute(accessible); err != nil {
+           fmt.Println("Error occurred:", err)
+           os.Exit(1)
+       }
+   }
+   ```
+
+3. **Test Your Commiter**: After implementing your commiter, test it thoroughly to ensure it works as expected with the `goodcommit` form.
+
+By following these steps, you can create and integrate your own commiter into `goodcommit`, allowing for a highly customized commit process.
