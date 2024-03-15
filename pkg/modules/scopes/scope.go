@@ -13,20 +13,12 @@ import (
 
 const MODULE_NAME = "scopes"
 
-type commitScope struct {
-	Name        string   `json:"name"`
-	Emoji       string   `json:"emoji"`
-	Description string   `json:"description"`
-	Types       []string `json:"types"`
-	ID          string   `json:"id"`
-}
-
 type Scopes struct {
 	config module.Config
-	Items  []commitScope `json:"scopes"`
+	Items  []module.Item `json:"scopes"`
 }
 
-func (s *Scopes) Load() error {
+func (s *Scopes) LoadConfig() error {
 
 	if s.config.Path == "" {
 		return nil
@@ -50,8 +42,8 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
 	for _, i := range s.Items {
-		if slices.Contains(i.Types, commit.Type) {
-			typeOptions = append(typeOptions, huh.NewOption(i.Emoji+"\t- "+i.Name, i.Name))
+		if slices.Contains(i.Conditional, commit.Type) {
+			typeOptions = append(typeOptions, huh.NewOption(commit.Type+"("+i.Emoji+"): "+i.Name+" - "+i.Description, i.Id))
 		}
 	}
 
@@ -61,8 +53,8 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 	return huh.NewSelect[string]().
 		Options(typeOptions...).
-		Title("Commit scope").
-		Description("Select the scope for these changes.").
+		Title("🙉・Select a Commit Scope").
+		Description("Additional contextual information about the changes.").
 		Value(&commit.Scope), nil
 }
 
@@ -78,6 +70,22 @@ func (s *Scopes) GetConfig() module.Config {
 	return s.config
 }
 
-func New(config module.Config) (module.Module, error) {
-	return &Scopes{config, []commitScope{}}, nil
+func (s *Scopes) SetConfig(config module.Config) {
+	s.config = config
+}
+
+func (s *Scopes) Debug() error {
+	// print configuration and items in a human readable format
+	fmt.Println(s.config)
+	fmt.Println(s.Items)
+
+	return nil
+}
+
+func (s *Scopes) GetName() string {
+	return MODULE_NAME
+}
+
+func New() module.Module {
+	return &Scopes{config: module.Config{Name: MODULE_NAME}, Items: []module.Item{}}
 }
