@@ -109,8 +109,13 @@ func (c *Commiter) PreviewCommit() {
 		fmt.Fprintf(&sb, "\n\nBREAKING CHANGE!")
 	}
 
-	if c.commit.CoAuthoredBy != "" {
-		fmt.Fprintf(&sb, "\n\nCo-authored-by: %s", keywordStyle.Render(c.commit.CoAuthoredBy))
+	if len(c.commit.CoAuthoredBy) > 0 {
+		var coauthors string
+		// build coauthors to gather all entries in CoAuthoredBy
+		for _, coauthor := range c.commit.CoAuthoredBy {
+			coauthors += fmt.Sprintf("Co-authored-by: %s\n", coauthor)
+		}
+		fmt.Fprintf(&sb, "\n\n%s", keywordStyle.Render(coauthors))
 	}
 
 	fmt.Fprintf(&sb, "\n\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))

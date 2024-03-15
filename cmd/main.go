@@ -9,6 +9,7 @@ import (
 	"github.com/nantli/goodcommit/pkg/commiter"
 	"github.com/nantli/goodcommit/pkg/module"
 	"github.com/nantli/goodcommit/pkg/modules/breaking"
+	"github.com/nantli/goodcommit/pkg/modules/coauthors"
 	"github.com/nantli/goodcommit/pkg/modules/greetings"
 	"github.com/nantli/goodcommit/pkg/modules/scopes"
 	"github.com/nantli/goodcommit/pkg/modules/types"
@@ -22,6 +23,7 @@ func main() {
 		types.New(),
 		scopes.New(),
 		breaking.New(),
+		coauthors.New(),
 	}
 
 	// Load configuration for each module

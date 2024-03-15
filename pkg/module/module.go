@@ -38,5 +38,5 @@ type CommitInfo struct {
 	Body         string
 	Footer       string
 	Breaking     bool
-	CoAuthoredBy string
+	CoAuthoredBy []string
 }

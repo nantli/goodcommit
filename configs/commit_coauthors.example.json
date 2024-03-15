@@ -1,0 +1,16 @@
+{
+    "coauthors": [
+      {
+        "id": "alice@example.com",
+        "name": "Alice"
+      },
+      {
+        "id": "bob@example.com",
+        "name": "Bob"
+      },
+      {
+        "id": "carol@example.com",
+        "name": "Carol"
+      }
+    ]
+  }

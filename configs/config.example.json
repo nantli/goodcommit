@@ -26,6 +26,14 @@
             "page": 3,
             "position": 1,
             "active": true
+        },
+        {
+            "name": "coauthors",
+            "page": 3,
+            "position": 2,
+            "active": true,
+            "path": "./configs/commit_coauthors.example.json"
         }
     ]
 }
+
