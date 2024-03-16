@@ -4,13 +4,13 @@
             "name": "greetings",
             "page": 1,
             "position": 1,
-            "active": false
+            "active": true
         },
         {
             "name": "types",
             "page": 1,
             "position": 2,
-            "active": false,
+            "active": true,
             "path": "./configs/commit_types.example.json",
             "checkpoint": true
         },
@@ -18,7 +18,7 @@
             "name": "scopes",
             "page": 2,
             "position": 2,
-            "active": false,
+            "active": true,
             "path": "./configs/commit_scopes.example.json"
         },
         {
@@ -50,7 +50,7 @@
             "name": "coauthors",
             "page": 4,
             "position": 1,
-            "active": false,
+            "active": true,
             "path": "./configs/commit_coauthors.example.json"
         }
     ]

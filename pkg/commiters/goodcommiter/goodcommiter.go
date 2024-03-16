@@ -86,7 +86,7 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 func (c *GoodCommiter) runPostProcessing() error {
 	for i := 0; i < 100; i++ {
 		for _, m := range c.modules {
-			if m.GetConfig().Priority > i {
+			if m.GetConfig().Priority != i {
 				continue
 			}
 			if err := m.PostProcess(&c.commit); err != nil {
@@ -123,7 +123,7 @@ func (c *GoodCommiter) previewCommit() {
 		fmt.Fprintf(&sb, "\n\n%s", keywordStyle.Render(coauthors))
 	}
 
-	fmt.Fprintf(&sb, "\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
+	fmt.Fprintf(&sb, "\n\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
 
 	fmt.Println(
 		lipgloss.NewStyle().
