@@ -28,10 +28,17 @@
             "active": true
         },
         {
+            "name": "body",
+            "page": 3,
+            "position": 2,
+            "active": true
+        },
+        {
             "name": "breaking",
             "page": 3,
             "position": 3,
-            "active": true
+            "active": true,
+            "priority": 10
         },
         {
             "name": "coauthors",

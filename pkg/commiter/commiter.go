@@ -1,6 +1,7 @@
+// Package commiter defines the Commiter interface which outlines the methods
+// required for a commiter implementation in the goodcommit application.
 package commiter
 
-// Commiter defines the interface for a goodcommit handler.
 type Commiter interface {
 	Execute(accessible bool) error
 }

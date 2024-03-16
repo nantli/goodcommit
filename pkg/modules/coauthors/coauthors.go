@@ -1,3 +1,5 @@
+// Package coauthors provides a module for goodcommit that allows the user to select
+// co-authors for the commit from a predefined list.
 package coauthors
 
 import (
@@ -33,6 +35,7 @@ func (c *CoAuthors) LoadConfig() error {
 	return nil
 }
 
+// NewField returns a MultiSelect field with options for each co-author.
 func (c *CoAuthors) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	var coAuthorOptions []huh.Option[string]
 	for _, item := range c.Items {
@@ -47,7 +50,6 @@ func (c *CoAuthors) NewField(commit *module.CommitInfo) (huh.Field, error) {
 }
 
 func (c *CoAuthors) PostProcess(commit *module.CommitInfo) error {
-	// Additional processing after form submission if needed
 	return nil
 }
 
@@ -57,11 +59,6 @@ func (c *CoAuthors) GetConfig() module.Config {
 
 func (c *CoAuthors) SetConfig(config module.Config) {
 	c.config = config
-}
-
-func (c *CoAuthors) Debug() error {
-	// Optionally implement debugging information
-	return nil
 }
 
 func (c *CoAuthors) GetName() string {

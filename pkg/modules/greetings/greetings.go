@@ -1,3 +1,7 @@
+// Package greetings provides a module for goodcommit that handles initial greetings.
+//
+// The greetings module is intended to be the first module in goodcommit. It displays a greeting
+// message and displays staged files to the user, asking for confirmation to proceed with the commit.
 package greetings
 
 import (
@@ -17,7 +21,6 @@ type Greetings struct {
 }
 
 func (g *Greetings) LoadConfig() error {
-	// Load any necessary configuration. For this module, there might not be any config to load.
 	return nil
 }
 
@@ -55,11 +58,6 @@ func (g *Greetings) GetConfig() module.Config {
 
 func (g *Greetings) SetConfig(config module.Config) {
 	g.config = config
-}
-
-func (g *Greetings) Debug() error {
-	// Optionally implement debugging information
-	return nil
 }
 
 func (g *Greetings) GetName() string {

@@ -28,7 +28,6 @@ type Module interface {
 	GetConfig() Config
 	GetName() string
 	SetConfig(config Config)
-	Debug() error
 }
 
 type CommitInfo struct {

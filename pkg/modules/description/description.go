@@ -1,3 +1,5 @@
+// Package description provides a module for goodcommit that prompts the user
+// for a brief description of the commit.
 package description
 
 import (
@@ -14,10 +16,10 @@ type Description struct {
 }
 
 func (d *Description) LoadConfig() error {
-	// No configuration to load for this module.
 	return nil
 }
 
+// NewField returns a new Input field for the user to write a brief description of the commit (max 50 chars).
 func (d *Description) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	return huh.NewInput().
 		Title("🐵・Write the Commit Description").
@@ -26,8 +28,8 @@ func (d *Description) NewField(commit *module.CommitInfo) (huh.Field, error) {
 		Value(&commit.Description), nil
 }
 
+// PostProcess lowercases the first letter of the commit description.
 func (d *Description) PostProcess(commit *module.CommitInfo) error {
-	// lowercase first letter of description
 	commit.Description = strings.ToLower(commit.Description[:1]) + commit.Description[1:]
 	return nil
 }
@@ -38,11 +40,6 @@ func (d *Description) GetConfig() module.Config {
 
 func (d *Description) SetConfig(config module.Config) {
 	d.config = config
-}
-
-func (d *Description) Debug() error {
-	// Optionally implement debugging information.
-	return nil
 }
 
 func (d *Description) GetName() string {

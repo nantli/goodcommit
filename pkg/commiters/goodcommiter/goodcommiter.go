@@ -1,3 +1,6 @@
+// Package goodcommiter provides the default implementation of the Commiter interface
+// for the goodcommit application. New commiters can be created to handle different
+// commit flows.
 package goodcommiter
 
 import (
@@ -101,12 +104,12 @@ func (c *GoodCommiter) previewCommit() {
 		keywordStyle.Render(c.commit.Type),
 		keywordStyle.Render(c.commit.Scope),
 		keywordStyle.Render(c.commit.Description),
-		keywordStyle.Render(c.commit.Body),
+		lipgloss.NewStyle().Italic(true).Render(c.commit.Body),
 		keywordStyle.Render(c.commit.Footer),
 	)
 
 	if c.commit.Breaking {
-		fmt.Fprintf(&sb, "\n\nBREAKING CHANGE!")
+		fmt.Fprintf(&sb, "\nBREAKING CHANGE!")
 	}
 
 	if len(c.commit.CoAuthoredBy) > 0 {
@@ -118,7 +121,7 @@ func (c *GoodCommiter) previewCommit() {
 		fmt.Fprintf(&sb, "\n\n%s", keywordStyle.Render(coauthors))
 	}
 
-	fmt.Fprintf(&sb, "\n\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
+	fmt.Fprintf(&sb, "\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
 
 	fmt.Println(
 		lipgloss.NewStyle().

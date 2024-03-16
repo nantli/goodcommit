@@ -12,7 +12,6 @@ func New(c commiter.Commiter) *GoodCommit {
 	return &GoodCommit{commiter: c}
 }
 
-// Execute runs the commiter's methods in the desired order.
 func (g *GoodCommit) Execute(accessible bool) error {
 	return g.commiter.Execute(accessible)
 }
