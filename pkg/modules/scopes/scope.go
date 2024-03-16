@@ -59,7 +59,7 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 }
 
 func (s *Scopes) PostProcess(commit *module.CommitInfo) error {
-	if commit.Scope == "" {
+	if commit.Scope == "" && s.IsActive() {
 		return fmt.Errorf("commit scope is required")
 	}
 	commit.Scope = strings.ToLower(commit.Scope)
@@ -84,6 +84,14 @@ func (s *Scopes) Debug() error {
 
 func (s *Scopes) GetName() string {
 	return MODULE_NAME
+}
+
+func (s *Scopes) InitCommitInfo(commit *module.CommitInfo) error {
+	return nil
+}
+
+func (s *Scopes) IsActive() bool {
+	return s.config.Active
 }
 
 func New() module.Module {

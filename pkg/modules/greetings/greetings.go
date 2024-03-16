@@ -75,6 +75,14 @@ func (g *Greetings) getStagedFiles() (string, error) {
 	return out.String(), nil
 }
 
+func (g *Greetings) InitCommitInfo(commit *module.CommitInfo) error {
+	return nil
+}
+
+func (g *Greetings) IsActive() bool {
+	return g.config.Active
+}
+
 func New() module.Module {
 	return &Greetings{config: module.Config{Name: MODULE_NAME}}
 }

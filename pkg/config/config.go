@@ -31,10 +31,17 @@ func LoadConfigToModules(modules []module.Module) []module.Module {
 
 	for _, mc := range cfg.ModulesToActivate {
 		for _, m := range modules {
+
 			if m.GetName() == mc.Name {
 				m.SetConfig(mc)
-				m.LoadConfig()
+				if m.IsActive() {
+					m.LoadConfig()
+				}
 			}
+			// drop modules that are not active
+			// if m.GetName() == mc.Name && !m.GetConfig().Active {
+			// 	modules = append(modules[:i], modules[i+1:]...)
+			// }
 		}
 	}
 	return modules

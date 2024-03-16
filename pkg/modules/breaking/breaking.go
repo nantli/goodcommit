@@ -47,6 +47,15 @@ func (s *Breaking) GetName() string {
 	return MODULE_NAME
 }
 
+func (s *Breaking) InitCommitInfo(commit *module.CommitInfo) error {
+	// No initialization needed for this module.
+	return nil
+}
+
+func (b *Breaking) IsActive() bool {
+	return b.config.Active
+}
+
 func New() module.Module {
 	return &Breaking{config: module.Config{Name: MODULE_NAME}}
 }

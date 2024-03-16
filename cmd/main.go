@@ -29,6 +29,7 @@ import (
 	"github.com/nantli/goodcommit/pkg/modules/greetings"
 	"github.com/nantli/goodcommit/pkg/modules/scopes"
 	"github.com/nantli/goodcommit/pkg/modules/types"
+	"github.com/nantli/goodcommit/pkg/modules/why"
 )
 
 func main() {
@@ -40,6 +41,7 @@ func main() {
 		types.New(),
 		scopes.New(),
 		body.New(),
+		why.New(),
 		description.New(),
 		breaking.New(),
 		coauthors.New(),
@@ -49,7 +51,11 @@ func main() {
 	modules = config.LoadConfigToModules(modules)
 
 	// Load the default goodcommiter (a goodcommit handler)
-	defaultCommiter := goodcommiter.New(modules)
+	defaultCommiter, err := goodcommiter.New(modules)
+	if err != nil {
+		fmt.Println("Error occurred:", err)
+		os.Exit(1)
+	}
 
 	// Load and execute goodcommit
 	gc := goodcommit.New(defaultCommiter)

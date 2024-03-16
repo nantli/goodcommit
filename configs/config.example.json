@@ -4,13 +4,13 @@
             "name": "greetings",
             "page": 1,
             "position": 1,
-            "active": true
+            "active": false
         },
         {
             "name": "types",
             "page": 1,
             "position": 2,
-            "active": true,
+            "active": false,
             "path": "./configs/commit_types.example.json",
             "checkpoint": true
         },
@@ -18,7 +18,7 @@
             "name": "scopes",
             "page": 2,
             "position": 2,
-            "active": true,
+            "active": false,
             "path": "./configs/commit_scopes.example.json"
         },
         {
@@ -28,15 +28,21 @@
             "active": true
         },
         {
-            "name": "body",
+            "name": "why",
             "page": 3,
             "position": 2,
             "active": true
         },
         {
-            "name": "breaking",
+            "name": "body",
             "page": 3,
             "position": 3,
+            "active": true
+        },
+        {
+            "name": "breaking",
+            "page": 3,
+            "position": 4,
             "active": true,
             "priority": 10
         },
@@ -44,7 +50,7 @@
             "name": "coauthors",
             "page": 4,
             "position": 1,
-            "active": true,
+            "active": false,
             "path": "./configs/commit_coauthors.example.json"
         }
     ]

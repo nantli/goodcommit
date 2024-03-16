@@ -65,6 +65,15 @@ func (c *CoAuthors) GetName() string {
 	return MODULE_NAME
 }
 
+func (c *CoAuthors) InitCommitInfo(commit *module.CommitInfo) error {
+	// No initialization needed for this module.
+	return nil
+}
+
+func (c *CoAuthors) IsActive() bool {
+	return c.config.Active
+}
+
 func New() module.Module {
 	return &CoAuthors{config: module.Config{Name: MODULE_NAME}}
 }

@@ -22,8 +22,10 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 	modulesByPage := make(map[int][]*module.Module)
 	// Iterate over the modules and add them to the map
 	for _, m := range c.modules {
-		page := m.GetConfig().Page
-		modulesByPage[page] = append(modulesByPage[page], &m)
+		if m.IsActive() {
+			page := m.GetConfig().Page
+			modulesByPage[page] = append(modulesByPage[page], &m)
+		}
 	}
 
 	var pages []int
@@ -154,6 +156,19 @@ func (c *GoodCommiter) Execute(accessible bool) error {
 	return c.commitChanges()
 }
 
-func New(modules []module.Module) *GoodCommiter {
-	return &GoodCommiter{modules, module.CommitInfo{}}
+func New(modules []module.Module) (*GoodCommiter, error) {
+	commit := module.CommitInfo{Extras: make(map[string]*string)}
+	// run InitCommitInfo from all modules in priority order
+	for i := 0; i < 100; i++ {
+		for _, m := range modules {
+			if m.GetConfig().Priority > i {
+				continue
+			}
+			if err := m.InitCommitInfo(&commit); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return &GoodCommiter{modules, commit}, nil
 }

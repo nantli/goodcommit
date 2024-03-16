@@ -41,6 +41,15 @@ func (b *Body) SetConfig(config module.Config) {
 	b.config = config
 }
 
+func (b *Body) InitCommitInfo(commit *module.CommitInfo) error {
+	// No initialization needed for this module.
+	return nil
+}
+
+func (b *Body) IsActive() bool {
+	return b.config.Active
+}
+
 func New() module.Module {
 	return &Body{config: module.Config{Name: MODULE_NAME}}
 }

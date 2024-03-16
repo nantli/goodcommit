@@ -46,6 +46,14 @@ func (d *Description) GetName() string {
 	return MODULE_NAME
 }
 
+func (d *Description) InitCommitInfo(commit *module.CommitInfo) error {
+	return nil
+}
+
+func (d *Description) IsActive() bool {
+	return d.config.Active
+}
+
 func New() module.Module {
 	return &Description{config: module.Config{Name: MODULE_NAME}}
 }
