@@ -86,7 +86,7 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 func (c *GoodCommiter) runPostProcessing() error {
 	for i := 0; i < 100; i++ {
 		for _, m := range c.modules {
-			if m.GetConfig().Priority > i {
+			if m.GetConfig().Priority != i {
 				continue
 			}
 			if err := m.PostProcess(&c.commit); err != nil {
@@ -100,6 +100,8 @@ func (c *GoodCommiter) runPostProcessing() error {
 func (c *GoodCommiter) previewCommit() {
 	var sb strings.Builder
 	keywordStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700"))
+	alertStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
+	footerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00D4F4"))
 	fmt.Fprintf(&sb,
 		"%s\n\nType: %s\nScope: %s\n\n%s\n\n%s\n\n%s",
 		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY 💎"),
@@ -111,7 +113,7 @@ func (c *GoodCommiter) previewCommit() {
 	)
 
 	if c.commit.Breaking {
-		fmt.Fprintf(&sb, "\nBREAKING CHANGE!")
+		fmt.Fprintf(&sb, "\n%s", alertStyle.Render("BREAKING CHANGE!"))
 	}
 
 	if len(c.commit.CoAuthoredBy) > 0 {
@@ -120,10 +122,10 @@ func (c *GoodCommiter) previewCommit() {
 		for _, coauthor := range c.commit.CoAuthoredBy {
 			coauthors += fmt.Sprintf("Co-authored-by: %s\n", coauthor)
 		}
-		fmt.Fprintf(&sb, "\n\n%s", keywordStyle.Render(coauthors))
+		fmt.Fprintf(&sb, "\n\n%s", footerStyle.Render(coauthors))
 	}
 
-	fmt.Fprintf(&sb, "\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
+	fmt.Fprintf(&sb, "\n\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
 
 	fmt.Println(
 		lipgloss.NewStyle().
