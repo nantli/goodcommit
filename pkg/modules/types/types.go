@@ -50,7 +50,7 @@ func (s *Types) NewField(commit *module.CommitInfo) (huh.Field, error) {
 }
 
 func (s *Types) PostProcess(commit *module.CommitInfo) error {
-	if commit.Type == "" {
+	if commit.Type == "" && s.IsActive() {
 		return fmt.Errorf("commit type is required")
 	}
 	return nil
@@ -74,6 +74,14 @@ func (s *Types) Debug() error {
 
 func (s *Types) GetName() string {
 	return MODULE_NAME
+}
+
+func (s *Types) InitCommitInfo(commit *module.CommitInfo) error {
+	return nil
+}
+
+func (s *Types) IsActive() bool {
+	return s.config.Active
 }
 
 func New() module.Module {

@@ -1,3 +1,16 @@
+/*
+Goodcommit is a tool for creating consistent and accessible commit messages.
+It is designed to be highly configurable and extensible, allowing for a wide range of use cases.
+
+Usage:
+
+	goodcommit [flags]
+
+Flags:
+
+	--accessible		Enable accessible mode
+	--config			Path to a configuration file
+*/
 package main
 
 import (
@@ -5,39 +18,49 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/nantli/goodcommit/internal/config"
-	"github.com/nantli/goodcommit/pkg/commiter"
+	"github.com/nantli/goodcommit/pkg/commiters/goodcommiter"
+	"github.com/nantli/goodcommit/pkg/config"
+	"github.com/nantli/goodcommit/pkg/goodcommit"
 	"github.com/nantli/goodcommit/pkg/module"
+	"github.com/nantli/goodcommit/pkg/modules/body"
 	"github.com/nantli/goodcommit/pkg/modules/breaking"
+	"github.com/nantli/goodcommit/pkg/modules/coauthors"
+	"github.com/nantli/goodcommit/pkg/modules/description"
 	"github.com/nantli/goodcommit/pkg/modules/greetings"
 	"github.com/nantli/goodcommit/pkg/modules/scopes"
 	"github.com/nantli/goodcommit/pkg/modules/types"
+	"github.com/nantli/goodcommit/pkg/modules/why"
 )
 
 func main() {
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 
+	// Load modules
 	modules := []module.Module{
 		greetings.New(),
 		types.New(),
 		scopes.New(),
+		body.New(),
+		why.New(),
+		description.New(),
 		breaking.New(),
+		coauthors.New(),
 	}
 
-	// Load configuration for each module
+	// Update modules with configuration
 	modules = config.LoadConfigToModules(modules)
 
-	c := commiter.New(modules)
-
-	if err := c.RunForm(accessible); err != nil {
-		fmt.Println("Error occurred while running form:", err)
+	// Load the default goodcommiter (a goodcommit handler)
+	defaultCommiter, err := goodcommiter.New(modules)
+	if err != nil {
+		fmt.Println("Error occurred:", err)
 		os.Exit(1)
 	}
 
-	if err := c.RunPostProcessing(); err != nil {
-		fmt.Println("Error occurred while running post processing:", err)
+	// Load and execute goodcommit
+	gc := goodcommit.New(defaultCommiter)
+	if err := gc.Execute(accessible); err != nil {
+		fmt.Println("Error occurred:", err)
 		os.Exit(1)
 	}
-
-	c.PreviewCommit()
 }

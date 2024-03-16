@@ -28,7 +28,8 @@ type Module interface {
 	GetConfig() Config
 	GetName() string
 	SetConfig(config Config)
-	Debug() error
+	InitCommitInfo(commit *CommitInfo) error
+	IsActive() bool
 }
 
 type CommitInfo struct {
@@ -38,5 +39,6 @@ type CommitInfo struct {
 	Body         string
 	Footer       string
 	Breaking     bool
-	CoAuthoredBy string
+	CoAuthoredBy []string
+	Extras       map[string]*string
 }
