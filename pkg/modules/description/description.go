@@ -22,7 +22,7 @@ func (d *Description) LoadConfig() error {
 // NewField returns a new Input field for the user to write a brief description of the commit (max 50 chars).
 func (d *Description) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	return huh.NewInput().
-		Title("🐵・Write the Commit Description").
+		Title("✏️・Write the Commit Description").
 		Description("Briefly describe the changes in this commit (max 50 chars).").
 		CharLimit(50).
 		Value(&commit.Description), nil

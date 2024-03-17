@@ -23,7 +23,7 @@ func (w *Why) LoadConfig() error {
 // NewField returns a new Input field for the user to explain why the change was needed.
 func (w *Why) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	return huh.NewInput().
-		Title("🤔・Why was this change needed?").
+		Title("❔・Why was this change needed?").
 		Description("Explain the reason for this change (max 100 chars).").
 		CharLimit(100).
 		Value(commit.Extras["why"]), nil

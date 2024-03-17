@@ -35,8 +35,8 @@ func (g *Greetings) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	}
 
 	// Display staged files as a simple text field in the form
-	stagedFilesText := fmt.Sprintf("Staged Files:\n%s", stagedFiles)
-	return huh.NewConfirm().Title("🐒・Do you want to commit these files?").Description(stagedFilesText).Validate(
+	stagedFilesText := fmt.Sprintf("\nStaged Files:\n%s", stagedFiles)
+	return huh.NewConfirm().Title("🐝・Do you want to commit these files?").Description(stagedFilesText).Validate(
 		func(b bool) error {
 			if b {
 				return nil

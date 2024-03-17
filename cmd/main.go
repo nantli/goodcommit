@@ -27,6 +27,7 @@ import (
 	"github.com/nantli/goodcommit/pkg/modules/coauthors"
 	"github.com/nantli/goodcommit/pkg/modules/description"
 	"github.com/nantli/goodcommit/pkg/modules/greetings"
+	"github.com/nantli/goodcommit/pkg/modules/logo"
 	"github.com/nantli/goodcommit/pkg/modules/scopes"
 	"github.com/nantli/goodcommit/pkg/modules/types"
 	"github.com/nantli/goodcommit/pkg/modules/why"
@@ -37,6 +38,7 @@ func main() {
 
 	// Load modules
 	modules := []module.Module{
+		logo.New(),
 		greetings.New(),
 		types.New(),
 		scopes.New(),
