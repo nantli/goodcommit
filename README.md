@@ -120,7 +120,7 @@ By following these steps, you can create and integrate your own commiter into `g
 
 ## Configuring Modules
 
-Modules in `goodcommit` can be customized through the a json file. This section outlines how to configure modules, detailing the available fields, their types, and functionalities.
+Modules in `goodcommit` can be customized through a JSON file. This section outlines how to configure modules, detailing the available fields, their types, and functionalities.
 
 ### Configuration Fields
 
@@ -134,6 +134,7 @@ Each module configuration can include the following fields:
 - `path`: `string` (optional) - Specifies a path to additional configuration or data files required by the module.
 - `priority`: `int` (optional, default: `0`) - Used to determine the module's priority. Lower values indicate higher priority.
 - `checkpoint`: `bool` (optional, default: `false`) - If `true`, the form will prompt for confirmation before proceeding past this module.
+- `dependencies`: `[]string` (optional) - A list of module names that must be active for this module to be activated. This ensures that the current module's functionality is only available if its dependencies are met.
 
 ### Examples
 
@@ -178,4 +179,18 @@ Below are examples of different module configurations and their effects:
    ```
    Activates the `types` module, using an external file for additional configuration.
 
+4. **Module with Dependencies**
+
+   ```json
+   {
+     "name": "breakingmsg",
+     "page": 4,
+     "position": 1,
+     "active": true,
+     "dependencies": ["breaking"]
+   }
+   ```
+   This configuration activates the `breakingmsg` module, which depends on the `breaking` module being active. If the `breaking` module is not active, `breakingmsg` will not be activated.
+
 By adjusting these fields in the `config.json` file, you can tailor the `goodcommit` form to meet your project's specific needs.
+
