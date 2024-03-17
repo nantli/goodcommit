@@ -24,6 +24,7 @@ import (
 	"github.com/nantli/goodcommit/pkg/module"
 	"github.com/nantli/goodcommit/pkg/modules/body"
 	"github.com/nantli/goodcommit/pkg/modules/breaking"
+	"github.com/nantli/goodcommit/pkg/modules/breakingmsg"
 	"github.com/nantli/goodcommit/pkg/modules/coauthors"
 	"github.com/nantli/goodcommit/pkg/modules/description"
 	"github.com/nantli/goodcommit/pkg/modules/greetings"
@@ -47,12 +48,17 @@ func main() {
 		why.New(),
 		description.New(),
 		breaking.New(),
+		breakingmsg.New(),
 		coauthors.New(),
 		signedoffby.New(),
 	}
 
 	// Update modules with configuration
-	modules = config.LoadConfigToModules(modules)
+	modules, err := config.LoadConfigToModules(modules)
+	if err != nil {
+		fmt.Println("Error occurred:", err)
+		os.Exit(1)
+	}
 
 	// Load the default goodcommiter (a goodcommit handler)
 	defaultCommiter, err := goodcommiter.New(modules)
