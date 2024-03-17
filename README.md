@@ -117,3 +117,65 @@ If using the default commiter is not good enough for you, you can create your ow
 3. **Test Your Commiter**: After implementing your commiter, test it thoroughly to ensure it works as expected with the `goodcommit` form.
 
 By following these steps, you can create and integrate your own commiter into `goodcommit`, allowing for a highly customized commit process.
+
+## Configuring Modules
+
+Modules in `goodcommit` can be customized through the a json file. This section outlines how to configure modules, detailing the available fields, their types, and functionalities.
+
+### Configuration Fields
+
+Each module configuration can include the following fields:
+
+- `name`: `string` - The unique identifier for the module.
+- `page`: `int` - Determines on which page the module appears in the form.
+- `position`: `int` (optional, default: `0`) - The order of the module on the page.
+- `pinned`: `bool` (optional, default: `false`) - If `true`, the module is pinned to the top of every page after its initial appearance.
+- `active`: `bool` (optional, default: `true`) - Controls the module's activation state. Inactive modules are not displayed.
+- `path`: `string` (optional) - Specifies a path to additional configuration or data files required by the module.
+- `priority`: `int` (optional, default: `0`) - Used to determine the module's priority. Lower values indicate higher priority.
+- `checkpoint`: `bool` (optional, default: `false`) - If `true`, the form will prompt for confirmation before proceeding past this module.
+
+### Examples
+
+Below are examples of different module configurations and their effects:
+
+1. **Basic Module Configuration**
+
+   ```json
+   {
+     "name": "description",
+     "page": 1,
+     "position": 1,
+     "pinned": false,
+     "active": true
+   }
+   ```
+   This configuration activates the `description` module, placing it first on page 1 without pinning it.
+
+2. **Pinned Module Configuration**
+
+   ```json
+   {
+     "name": "logo",
+     "page": 1,
+     "position": 1,
+     "pinned": true,
+     "active": true
+   }
+   ```
+   The `logo` module is activated, pinned, and placed at the top of every page.
+
+3. **Module with External Configuration**
+
+   ```json
+   {
+     "name": "types",
+     "page": 1,
+     "position": 2,
+     "active": true,
+     "path": "./configs/commit_types.json"
+   }
+   ```
+   Activates the `types` module, using an external file for additional configuration.
+
+By adjusting these fields in the `config.json` file, you can tailor the `goodcommit` form to meet your project's specific needs.
