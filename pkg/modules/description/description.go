@@ -30,6 +30,9 @@ func (d *Description) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 // PostProcess lowercases the first letter of the commit description.
 func (d *Description) PostProcess(commit *module.CommitInfo) error {
+	if commit.Description == "" {
+		return nil
+	}
 	commit.Description = strings.ToLower(commit.Description[:1]) + commit.Description[1:]
 	return nil
 }

@@ -24,12 +24,12 @@ func (s *Types) LoadConfig() error {
 
 	raw, err := os.ReadFile(s.config.Path)
 	if err != nil {
-		fmt.Println("Error occurred while reading config:", err)
+		fmt.Println("Error occurred while reading types config:", err)
 		os.Exit(1)
 	}
 	err = json.Unmarshal(raw, &s)
 	if err != nil {
-		fmt.Println("Error occurred while parsing config:", err)
+		fmt.Println("Error occurred while parsing types config:", err)
 		os.Exit(1)
 	}
 

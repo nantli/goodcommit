@@ -31,6 +31,10 @@ func (w *Why) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 // PostProcess prepends the value of the Why field to the commit body
 func (w *Why) PostProcess(commit *module.CommitInfo) error {
+	if commit.Extras["why"] == nil || *commit.Extras["why"] == "" {
+		return nil
+	}
+
 	commit.Body = fmt.Sprintf("%s\n\n%s", *commit.Extras["why"], commit.Body)
 	return nil
 }
@@ -48,7 +52,7 @@ func (w *Why) GetName() string {
 }
 
 func (w *Why) InitCommitInfo(commit *module.CommitInfo) error {
-	placeholder := "WHY: "
+	placeholder := ""
 	commit.Extras["why"] = &placeholder
 	return nil
 }
