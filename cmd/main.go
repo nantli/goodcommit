@@ -29,6 +29,7 @@ import (
 	"github.com/nantli/goodcommit/pkg/modules/greetings"
 	"github.com/nantli/goodcommit/pkg/modules/logo"
 	"github.com/nantli/goodcommit/pkg/modules/scopes"
+	"github.com/nantli/goodcommit/pkg/modules/signedoffby"
 	"github.com/nantli/goodcommit/pkg/modules/types"
 	"github.com/nantli/goodcommit/pkg/modules/why"
 )
@@ -47,6 +48,7 @@ func main() {
 		description.New(),
 		breaking.New(),
 		coauthors.New(),
+		signedoffby.New(),
 	}
 
 	// Update modules with configuration

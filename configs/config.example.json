@@ -59,6 +59,10 @@
             "position": 1,
             "active": true,
             "path": "./configs/commit_coauthors.example.json"
+        },
+        {
+            "name": "signedoffby",
+            "active": true
         }
     ]
 }
