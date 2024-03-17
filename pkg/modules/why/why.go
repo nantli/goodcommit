@@ -35,7 +35,7 @@ func (w *Why) PostProcess(commit *module.CommitInfo) error {
 		return nil
 	}
 
-	commit.Body = fmt.Sprintf("%s\n\n%s", *commit.Extras["why"], commit.Body)
+	commit.Body = fmt.Sprintf("WHY: %s\n\n%s", *commit.Extras["why"], commit.Body)
 	return nil
 }
 

@@ -134,18 +134,24 @@ func (c *GoodCommiter) previewCommit() {
 	keywordStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700"))
 	alertStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
 	footerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00D4F4"))
+
+	// Determine the style to use based on whether the commit type includes an exclamation mark
+	var typeStyle lipgloss.Style
+	if strings.Contains(c.commit.Type, "!") {
+		typeStyle = alertStyle
+	} else {
+		typeStyle = keywordStyle
+	}
+
+	// Use the determined style for the commit type
 	fmt.Fprintf(&sb,
 		"%s\n\nType: %s\nScope: %s\nDescription: %s\nBody:\n\n%s",
 		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY 💎"),
-		keywordStyle.Render(c.commit.Type),
+		typeStyle.Render(c.commit.Type), // Apply the conditional styling here
 		keywordStyle.Render(c.commit.Scope),
 		keywordStyle.Render(c.commit.Description),
 		lipgloss.NewStyle().Italic(true).Render(c.commit.Body),
 	)
-
-	if c.commit.Breaking {
-		fmt.Fprintf(&sb, "\n\n%s", alertStyle.Render("BREAKING CHANGE!"))
-	}
 
 	if len(c.commit.CoAuthoredBy) > 0 {
 		var coauthors string
