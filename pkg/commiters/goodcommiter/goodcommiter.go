@@ -76,7 +76,11 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 			if err != nil {
 				return err
 			}
-			fields = append(fields, field)
+
+			if field != nil {
+				fields = append(fields, field)
+			}
+
 		}
 
 		group := huh.NewGroup(fields...)
@@ -131,17 +135,13 @@ func (c *GoodCommiter) previewCommit() {
 	alertStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
 	footerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00D4F4"))
 	fmt.Fprintf(&sb,
-		"%s\n\nType: %s\nScope: %s\n\n%s\n\n%s",
+		"%s\n\nType: %s\nScope: %s\nDescription: %s\nBody:\n\n%s",
 		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY 💎"),
 		keywordStyle.Render(c.commit.Type),
 		keywordStyle.Render(c.commit.Scope),
 		keywordStyle.Render(c.commit.Description),
 		lipgloss.NewStyle().Italic(true).Render(c.commit.Body),
 	)
-
-	if c.commit.Footer != "" {
-		fmt.Fprintf(&sb, "\n%s", keywordStyle.Render(c.commit.Footer))
-	}
 
 	if c.commit.Breaking {
 		fmt.Fprintf(&sb, "\n\n%s", alertStyle.Render("BREAKING CHANGE!"))
@@ -154,6 +154,10 @@ func (c *GoodCommiter) previewCommit() {
 			coauthors += fmt.Sprintf("\nCo-authored-by: %s", coauthor)
 		}
 		fmt.Fprintf(&sb, "\n%s", footerStyle.Render(coauthors))
+	}
+
+	if c.commit.Footer != "" {
+		fmt.Fprintf(&sb, "%s", footerStyle.Render(c.commit.Footer))
 	}
 
 	fmt.Fprintf(&sb, "\n\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
