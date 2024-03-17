@@ -53,8 +53,8 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 
 	return huh.NewSelect[string]().
 		Options(typeOptions...).
-		Title("🙉・Select a Commit Scope").
-		Description("Additional contextual information about the changes.").
+		Title("🪱・Select a Commit Scope").
+		Description("Additional contextual information about the changes.\n").
 		Value(&commit.Scope), nil
 }
 

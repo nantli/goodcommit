@@ -10,6 +10,7 @@ type Config struct {
 	Path       string `json:"path,omitempty"`
 	Priority   int    `json:"priority"`
 	Checkpoint bool   `json:"checkpoint"`
+	Pinned     bool   `json:"pinned"`
 }
 
 type Item struct {

@@ -44,8 +44,8 @@ func (s *Types) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	}
 	return huh.NewSelect[string]().
 		Options(typeOptions...).
-		Title("🙈・Select a Commit Type").
-		Description("Folowing the Conventional Commits specification.").
+		Title("🪰・Select a Commit Type").
+		Description("Folowing the Conventional Commits specification.\n").
 		Value(&commit.Type), nil
 }
 

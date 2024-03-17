@@ -20,11 +20,32 @@ type GoodCommiter struct {
 
 func (c *GoodCommiter) runForm(accessible bool) error {
 	modulesByPage := make(map[int][]*module.Module)
-	// Iterate over the modules and add them to the map
+	pinnedModules := make(map[*module.Module][]int)
+	var maxPage int // Track the maximum page number
+
+	// First pass: Iterate over the modules to populate modulesByPage and track pinned modules
 	for _, m := range c.modules {
 		if m.IsActive() {
 			page := m.GetConfig().Page
+			if page > maxPage {
+				maxPage = page // Update maxPage if the current page is higher
+			}
 			modulesByPage[page] = append(modulesByPage[page], &m)
+			if m.GetConfig().Pinned {
+				// If the module is pinned, track it for addition to subsequent pages
+				for p := page + 1; p <= 30; p++ { // Assuming a max of 20 pages for simplicity
+					pinnedModules[&m] = append(pinnedModules[&m], p)
+				}
+			}
+		}
+	}
+
+	// Second pass: Add pinned modules to their respective pages, up to maxPage
+	for m, pages := range pinnedModules {
+		for _, page := range pages {
+			if page <= maxPage { // Only add to pages within the maxPage limit
+				modulesByPage[page] = append(modulesByPage[page], m)
+			}
 		}
 	}
 
@@ -38,7 +59,14 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 	for _, page := range pages { // Iterate over sorted pages
 		// Sort the modules by position
 		sort.Slice(modulesByPage[page], func(i, j int) bool {
-			return (*modulesByPage[page][i]).GetConfig().Position < (*modulesByPage[page][j]).GetConfig().Position
+			mi, mj := *modulesByPage[page][i], *modulesByPage[page][j]
+			if mi.GetConfig().Page == mj.GetConfig().Page {
+				if mi.GetConfig().Pinned == mj.GetConfig().Pinned {
+					return mi.GetConfig().Position < mj.GetConfig().Position
+				}
+				return mi.GetConfig().Pinned && !mj.GetConfig().Pinned
+			}
+			return mi.GetConfig().Page < mj.GetConfig().Page
 		})
 
 		var fields []huh.Field
@@ -103,26 +131,29 @@ func (c *GoodCommiter) previewCommit() {
 	alertStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
 	footerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00D4F4"))
 	fmt.Fprintf(&sb,
-		"%s\n\nType: %s\nScope: %s\n\n%s\n\n%s\n\n%s",
+		"%s\n\nType: %s\nScope: %s\n\n%s\n\n%s",
 		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY 💎"),
 		keywordStyle.Render(c.commit.Type),
 		keywordStyle.Render(c.commit.Scope),
 		keywordStyle.Render(c.commit.Description),
 		lipgloss.NewStyle().Italic(true).Render(c.commit.Body),
-		keywordStyle.Render(c.commit.Footer),
 	)
 
+	if c.commit.Footer != "" {
+		fmt.Fprintf(&sb, "\n%s", keywordStyle.Render(c.commit.Footer))
+	}
+
 	if c.commit.Breaking {
-		fmt.Fprintf(&sb, "\n%s", alertStyle.Render("BREAKING CHANGE!"))
+		fmt.Fprintf(&sb, "\n\n%s", alertStyle.Render("BREAKING CHANGE!"))
 	}
 
 	if len(c.commit.CoAuthoredBy) > 0 {
 		var coauthors string
 		// build coauthors to gather all entries in CoAuthoredBy
 		for _, coauthor := range c.commit.CoAuthoredBy {
-			coauthors += fmt.Sprintf("Co-authored-by: %s\n", coauthor)
+			coauthors += fmt.Sprintf("\nCo-authored-by: %s", coauthor)
 		}
-		fmt.Fprintf(&sb, "\n\n%s", footerStyle.Render(coauthors))
+		fmt.Fprintf(&sb, "\n%s", footerStyle.Render(coauthors))
 	}
 
 	fmt.Fprintf(&sb, "\n\n%s", lipgloss.NewStyle().Bold(true).Render("He's alright, he's a GOODCOMMIT!"))
