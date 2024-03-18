@@ -44,7 +44,7 @@ func LoadConfigToModules(modules []module.Module) ([]module.Module, error) {
 	// Second pass: Filter modules based on dependencies being met
 	for _, mc := range cfg.ModulesToActivate {
 		for _, m := range modules {
-			if m.GetName() == mc.Name {
+			if m.GetName() == mc.Name && mc.Active { // Ensure module is active before checking dependencies
 				// Check if all dependencies are met
 				allDependenciesMet := true
 				for _, dep := range mc.Dependencies {
