@@ -155,7 +155,7 @@ func (c *GoodCommiter) previewCommit() {
 
 	// Use the determined style for the commit type
 	fmt.Fprintf(&sb,
-		"%s\n\nType: %s\nScope: %s\nDescription: %s\nBody:\n\n%s",
+		"%s\n\nType: %s\nScope: %s\nDescription: %s\nBody:\n\n%s\n",
 		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY 💎"),
 		typeStyle.Render(c.commit.Type), // Apply the conditional styling here
 		keywordStyle.Render(c.commit.Scope),
@@ -169,7 +169,7 @@ func (c *GoodCommiter) previewCommit() {
 		for _, coauthor := range c.commit.CoAuthoredBy {
 			coauthors += fmt.Sprintf("\nCo-authored-by: %s", coauthor)
 		}
-		fmt.Fprintf(&sb, "\n%s", footerStyle.Render(coauthors))
+		fmt.Fprintf(&sb, "%s", footerStyle.Render(coauthors))
 	}
 
 	if c.commit.Footer != "" {
