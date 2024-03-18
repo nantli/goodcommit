@@ -56,6 +56,8 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 	sort.Ints(pages) // Sort the pages
 
 	var groups []*huh.Group
+	pageHasNonPinned := make(map[int]bool) // Track if a page has non-pinned modules
+
 	for _, page := range pages { // Iterate over sorted pages
 		// Sort the modules by position
 		sort.Slice(modulesByPage[page], func(i, j int) bool {
@@ -72,19 +74,26 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 		var fields []huh.Field
 		// Add the fields from the modules to the group
 		for _, m := range modulesByPage[page] {
+
 			field, err := (*m).NewField(&c.commit)
 			if err != nil {
 				return err
 			}
 
+			if !(*m).GetConfig().Pinned && field != nil && (*m).GetConfig().Active {
+				pageHasNonPinned[page] = true // Mark page as having non-pinned modules
+			}
+
 			if field != nil {
 				fields = append(fields, field)
 			}
-
 		}
 
-		group := huh.NewGroup(fields...)
-		groups = append(groups, group)
+		// Only create a group if the page has non-pinned modules
+		if pageHasNonPinned[page] {
+			group := huh.NewGroup(fields...)
+			groups = append(groups, group)
+		}
 
 		// Check if any module in the page has the checkpoint set to true
 		for _, m := range modulesByPage[page] {
@@ -105,6 +114,7 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 			}
 		}
 	}
+
 	// Create and run the form with the remaining groups
 	form := huh.NewForm(groups...).
 		WithTheme(huh.ThemeCharm()).
