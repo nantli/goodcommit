@@ -12,6 +12,13 @@ func New(c commiter.Commiter) *GoodCommit {
 	return &GoodCommit{commiter: c}
 }
 
-func (g *GoodCommit) Execute(accessible bool) error {
-	return g.commiter.Execute(accessible)
+func (g *GoodCommit) Execute(accessible bool) (string, error) {
+	if err := g.commiter.RunForm(accessible); err != nil {
+		return "", err
+	}
+	if err := g.commiter.RunPostProcessing(); err != nil {
+		return "", err
+	}
+	g.commiter.PreviewCommit()
+	return g.commiter.RenderMessage(), nil
 }

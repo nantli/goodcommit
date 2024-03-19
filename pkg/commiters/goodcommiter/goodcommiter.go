@@ -10,15 +10,16 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/nantli/goodcommit/pkg/commit"
 	"github.com/nantli/goodcommit/pkg/module"
 )
 
 type GoodCommiter struct {
 	modules []module.Module
-	commit  module.CommitInfo
+	commit  commit.Config
 }
 
-func (c *GoodCommiter) runForm(accessible bool) error {
+func (c *GoodCommiter) RunForm(accessible bool) error {
 	modulesByPage := make(map[int][]*module.Module)
 	pinnedModules := make(map[*module.Module][]int)
 	var maxPage int // Track the maximum page number
@@ -125,7 +126,7 @@ func (c *GoodCommiter) runForm(accessible bool) error {
 	return err
 }
 
-func (c *GoodCommiter) runPostProcessing() error {
+func (c *GoodCommiter) RunPostProcessing() error {
 	for i := 0; i < 100; i++ {
 		for _, m := range c.modules {
 			if m.GetConfig().Priority != i {
@@ -139,7 +140,7 @@ func (c *GoodCommiter) runPostProcessing() error {
 	return nil
 }
 
-func (c *GoodCommiter) previewCommit() {
+func (c *GoodCommiter) PreviewCommit() {
 	var sb strings.Builder
 	keywordStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700"))
 	alertStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
@@ -153,11 +154,17 @@ func (c *GoodCommiter) previewCommit() {
 		typeStyle = keywordStyle
 	}
 
+	breakingChangeIndicator := ""
+	if c.commit.Breaking {
+		breakingChangeIndicator = "!"
+	}
+
 	// Use the determined style for the commit type
 	fmt.Fprintf(&sb,
-		"%s\n\nType: %s\nScope: %s\nDescription: %s\nBody:\n\n%s\n",
+		"%s\n\nType: %s%s\nScope: %s\nDescription: %s\nBody:\n\n%s\n",
 		lipgloss.NewStyle().Bold(true).Render("COMMIT SUMMARY 💎"),
 		typeStyle.Render(c.commit.Type), // Apply the conditional styling here
+		breakingChangeIndicator,
 		keywordStyle.Render(c.commit.Scope),
 		keywordStyle.Render(c.commit.Description),
 		lipgloss.NewStyle().Italic(true).Render(c.commit.Body),
@@ -188,29 +195,37 @@ func (c *GoodCommiter) previewCommit() {
 	)
 }
 
-func (c *GoodCommiter) stringifyCommit() string {
-	return ""
-}
-
-func (c *GoodCommiter) commitChanges() error {
-	message := c.stringifyCommit()
-	print(message)
-	return nil
-}
-
-func (c *GoodCommiter) Execute(accessible bool) error {
-	if err := c.runForm(accessible); err != nil {
-		return err
+func (c *GoodCommiter) RenderMessage() string {
+	var scopeStr string
+	if c.commit.Scope != "" {
+		scopeStr = fmt.Sprintf("(%s)", c.commit.Scope)
 	}
-	if err := c.runPostProcessing(); err != nil {
-		return err
+
+	breakingChangeIndicator := ""
+	if c.commit.Breaking {
+		breakingChangeIndicator = "!"
 	}
-	c.previewCommit()
-	return c.commitChanges()
+
+	commitMsg := fmt.Sprintf("%s%s%s: %s\n\n%s\n", c.commit.Type, scopeStr, breakingChangeIndicator, c.commit.Description, c.commit.Body)
+
+	if len(c.commit.CoAuthoredBy) > 0 {
+		var coauthors string
+		// build coauthors to gather all entries in CoAuthoredBy
+		for _, coauthor := range c.commit.CoAuthoredBy {
+			coauthors += fmt.Sprintf("\nCo-authored-by: %s", coauthor)
+		}
+		commitMsg += coauthors
+	}
+
+	if c.commit.Footer != "" {
+		commitMsg += c.commit.Footer
+	}
+
+	return commitMsg
 }
 
 func New(modules []module.Module) (*GoodCommiter, error) {
-	commit := module.CommitInfo{Extras: make(map[string]*string)}
+	commit := commit.Config{Extras: make(map[string]*string)}
 	// run InitCommitInfo from all modules in priority order
 	for i := 0; i < 100; i++ {
 		for _, m := range modules {

@@ -3,5 +3,8 @@
 package commiter
 
 type Commiter interface {
-	Execute(accessible bool) error
+	RunForm(accessible bool) error
+	RunPostProcessing() error
+	PreviewCommit()
+	RenderMessage() string
 }

@@ -2,31 +2,25 @@
     "scopes": [
         {
             "id": "empty",
-            "emoji": "🦙",
+            "emoji": "🐜",
             "name": "Empty",
-            "description": "Use it for everything else",
+            "title": "",
+            "description": "Use this for everything else",
             "conditional": ["feat","fix", "chore"]
         },
         {
-            "id": "persistence",
-            "emoji": "🗄️",
-            "name": "Persistence",
-            "description": "Use this for tasks related to databases and other persistence layers",
+            "id": "commiters",
+            "emoji": "⛓️",
+            "name": "Commiters",
+            "description": "Use this when changes are made to commiters",
             "conditional": ["feat", "fix"]
         },
         {
-            "id": "performance",
-            "emoji": "🏎️",
-            "name": "Performance",
-            "description": "Use it for performance improvements",
-            "conditional": ["feat","fix"]
-        },
-        {
-            "id": "infrastructure",
-            "emoji": "🏗️",
-            "name": "Infrastructure",
-            "description": "Use this for anything related to infrastructure e.g. Terraform, Kubernetes",
-            "conditional": ["feat","fix"]
+            "id": "modules",
+            "emoji": "📦",
+            "name": "Modules",
+            "description": "Use this when changes are made to modules",
+            "conditional": ["feat", "fix"]
         },
         {
             "id": "wip",
@@ -34,6 +28,13 @@
             "name": "WIP",
             "description": "Use it when you need to commit but your work is still in progress",
             "conditional": ["feat","fix","chore"]
+        },
+        {
+            "id": "refactor",
+            "emoji": "🧰",
+            "name": "Refactor",
+            "description": "Use it when improving the codebase without adding new features or fixing bugs",
+            "conditional": ["chore"]
         },
         {
             "id": "dx",
@@ -47,13 +48,6 @@
             "emoji": "📚",
             "name": "Documentation",
             "description": "Use it for everything Documentation",
-            "conditional": ["chore"]
-        },
-        {
-            "id": "config",
-            "emoji": "🛠️",
-            "name": "Configuration",
-            "description": "Use it when modifying configuration files e.g. package.json",
             "conditional": ["chore"]
         }
     ]
