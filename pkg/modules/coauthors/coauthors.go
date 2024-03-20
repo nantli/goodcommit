@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/charmbracelet/huh"
+	"github.com/nantli/goodcommit/pkg/commit"
 	"github.com/nantli/goodcommit/pkg/module"
 )
 
@@ -36,7 +37,7 @@ func (c *CoAuthors) LoadConfig() error {
 }
 
 // NewField returns a MultiSelect field with options for each co-author.
-func (c *CoAuthors) NewField(commit *module.CommitInfo) (huh.Field, error) {
+func (c *CoAuthors) NewField(commit *commit.Config) (huh.Field, error) {
 	var coAuthorOptions []huh.Option[string]
 	for _, item := range c.Items {
 		coAuthorOptions = append(coAuthorOptions, huh.NewOption(item.Name+" - "+item.Id, item.Name+" <"+item.Id+">"))
@@ -49,7 +50,7 @@ func (c *CoAuthors) NewField(commit *module.CommitInfo) (huh.Field, error) {
 		Value(&commit.CoAuthoredBy), nil
 }
 
-func (c *CoAuthors) PostProcess(commit *module.CommitInfo) error {
+func (c *CoAuthors) PostProcess(commit *commit.Config) error {
 	return nil
 }
 
@@ -65,7 +66,7 @@ func (c *CoAuthors) GetName() string {
 	return MODULE_NAME
 }
 
-func (c *CoAuthors) InitCommitInfo(commit *module.CommitInfo) error {
+func (c *CoAuthors) InitCommitInfo(commit *commit.Config) error {
 	// No initialization needed for this module.
 	return nil
 }

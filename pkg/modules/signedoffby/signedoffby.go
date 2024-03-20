@@ -6,6 +6,7 @@ import (
 	"os/exec"
 
 	"github.com/charmbracelet/huh"
+	"github.com/nantli/goodcommit/pkg/commit"
 	"github.com/nantli/goodcommit/pkg/module"
 )
 
@@ -20,12 +21,12 @@ func (s *SignedOffBy) LoadConfig() error {
 	return nil
 }
 
-func (s *SignedOffBy) NewField(commit *module.CommitInfo) (huh.Field, error) {
+func (s *SignedOffBy) NewField(commit *commit.Config) (huh.Field, error) {
 	// This module does not require input from the user.
 	return nil, nil
 }
 
-func (s *SignedOffBy) PostProcess(commit *module.CommitInfo) error {
+func (s *SignedOffBy) PostProcess(commit *commit.Config) error {
 	// Execute the command to get the user's name from Git config
 	nameCmd := exec.Command("git", "config", "--get", "user.name")
 	var nameOut bytes.Buffer
@@ -67,7 +68,7 @@ func (s *SignedOffBy) IsActive() bool {
 	return s.config.Active
 }
 
-func (s *SignedOffBy) InitCommitInfo(commit *module.CommitInfo) error {
+func (s *SignedOffBy) InitCommitInfo(commit *commit.Config) error {
 	// Initialize any necessary fields in CommitInfo.
 	return nil
 }

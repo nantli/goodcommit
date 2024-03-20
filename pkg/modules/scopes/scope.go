@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 	"slices"
-	"strings"
 
 	"github.com/charmbracelet/huh"
+	"github.com/nantli/goodcommit/pkg/commit"
 	"github.com/nantli/goodcommit/pkg/module"
 )
 
@@ -16,6 +16,15 @@ const MODULE_NAME = "scopes"
 type Scopes struct {
 	config module.Config
 	Items  []module.Item `json:"scopes"`
+}
+
+func (s *Scopes) getItem(id string) module.Item {
+	for _, i := range s.Items {
+		if i.Id == id {
+			return i
+		}
+	}
+	return module.Item{}
 }
 
 func (s *Scopes) LoadConfig() error {
@@ -38,7 +47,7 @@ func (s *Scopes) LoadConfig() error {
 	return nil
 }
 
-func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
+func (s *Scopes) NewField(commit *commit.Config) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
 	for _, i := range s.Items {
@@ -58,11 +67,16 @@ func (s *Scopes) NewField(commit *module.CommitInfo) (huh.Field, error) {
 		Value(&commit.Scope), nil
 }
 
-func (s *Scopes) PostProcess(commit *module.CommitInfo) error {
+func (s *Scopes) PostProcess(commit *commit.Config) error {
 	if commit.Scope == "" && s.IsActive() {
 		return fmt.Errorf("commit scope is required")
 	}
-	commit.Scope = strings.ToLower(commit.Scope)
+	scopeId := commit.Scope
+	commit.Scope = s.getItem(scopeId).Emoji
+	if scopeId != "empty" {
+		commit.Body = fmt.Sprintf("SCOPE: %s\n%s", s.getItem(scopeId).Name, commit.Body)
+	}
+
 	return nil
 }
 
@@ -86,7 +100,7 @@ func (s *Scopes) GetName() string {
 	return MODULE_NAME
 }
 
-func (s *Scopes) InitCommitInfo(commit *module.CommitInfo) error {
+func (s *Scopes) InitCommitInfo(commit *commit.Config) error {
 	return nil
 }
 
