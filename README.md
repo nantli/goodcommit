@@ -20,8 +20,17 @@ To build `goodcommit`, ensure you have Go installed on your system. Then, follow
    ```
 4. Run `goodcommit`:
    ```bash
+   git add .
    ./goodcommit
    ```
+
+### Specifying a Configuration File
+
+To use a custom configuration file with `goodcommit`, specify the `--config` flag followed by the path to your configuration file (more details on configuration files below) when running the program:
+
+```bash
+./goodcommit --config /path/to/your/config.json
+```
 
 ## Developing New Modules
 
@@ -45,7 +54,7 @@ Modules in `goodcommit` allow for extensibility and customization of the commit 
    // Implement interface methods: LoadConfig, NewField, PostProcess, etc.
    ```
 
-3. **Implement Required Methods**: At minimum, implement `LoadConfig`, `NewField`, and `PostProcess` methods as per your module's functionality.
+3. **Implement Required Methods**: At minimum, implement `LoadConfig`, `NewField`, `PostProcess`, `GetConfig`, `GetName`, `PostProccess`, `InitCommitInfo`, and `IsActive` methods as per your module's functionality.
 
 4. **Register Your Module**: In `cmd/main.go`, import your module and add it to the `modules` slice.
    ```go
@@ -88,8 +97,8 @@ If using the default commiter is not good enough for you, you can create your ow
        // Implement how to preview the commit
    }
 
-   func (yc *YourCommiter) Commit() error {
-       // Implement the commit action
+   func (yc *YourCommiter) RenderMessage() error {
+       // Implement how to render the commit message
    }
    ```
 
@@ -102,12 +111,13 @@ If using the default commiter is not good enough for you, you can create your ow
    )
 
    func main() {
+       // ...
        // Initialize your commiter
-       yourCommiter := yourcommiter.New()
+       yourCommiter := yourcommiter.New(modules)
        // Create a GoodCommit instance with your commiter
-       goodCommit := goodcommit.New(yourCommiter)
+       goodcommit := goodcommit.New(yourCommiter)
        // Execute
-       if err := goodCommit.Execute(accessible); err != nil {
+       if err := goodcommit.Execute(accessible); err != nil {
            fmt.Println("Error occurred:", err)
            os.Exit(1)
        }
@@ -194,3 +204,60 @@ Below are examples of different module configurations and their effects:
 
 By adjusting these fields in the `config.json` file, you can tailor the `goodcommit` form to meet your project's specific needs.
 
+### Example Configuration File
+
+This is an example configuration file that activates the modules: `types`, `scopes`, `description`, `body`, `breaking` and `breakingmsg`. You can use this as a starting point for your own configuration.
+
+```json
+{
+    "activeModules": [
+        {
+            "name": "types",
+            "page": 1,
+            "position": 1,
+            "active": true,
+            "path": "./configs/commit_types.example.json",
+            "checkpoint": true
+        },
+        {
+            "name": "scopes",
+            "page": 2,
+            "position": 1,
+            "active": true,
+            "path": "./configs/commit_scopes.example.json",
+            "dependencies": ["types"],
+            "priority": 3
+        },
+        {
+            "name": "description",
+            "page": 3,
+            "position": 1,
+            "active": true
+        },
+        {
+            "name": "body",
+            "page": 3,
+            "position": 2,
+            "active": true,
+            "priority": 2
+        },
+        {
+            "name": "breaking",
+            "page": 3,
+            "position": 3,
+            "active": true,
+            "priority": 4,
+            "checkpoint": true
+        },
+        {
+            "name": "breakingmsg",
+            "page": 4,
+            "position": 1,
+            "active": true,
+            "priority": 5,
+            "dependencies": ["breaking"]
+        }
+    ]
+}
+
+```
