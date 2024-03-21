@@ -14,6 +14,7 @@ Flags:
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -38,6 +39,10 @@ import (
 )
 
 func main() {
+	var configPath string
+	flag.StringVar(&configPath, "config", "./configs/config.example.json", "Path to a configuration file")
+	flag.Parse()
+
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 
 	// Load modules
@@ -56,7 +61,7 @@ func main() {
 	}
 
 	// Update modules with configuration
-	modules, err := config.LoadConfigToModules(modules)
+	modules, err := config.LoadConfigToModules(modules, configPath)
 	if err != nil {
 		fmt.Println("Error occurred while loading configuration:", err)
 		os.Exit(1)
@@ -77,7 +82,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Commit changes
+	// Commit changes, execute command
 	cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
 	cmd := exec.Command("sh", "-c", cmdStr)
 	err = cmd.Run()

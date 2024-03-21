@@ -4,7 +4,7 @@
             "id": "goodcommit",
             "emoji": "🔫",
             "name": "Goodcommit",
-            "description": "Use this when non of the other scopes appl",
+            "description": "Use this when non of the other scopes apply",
             "conditional": ["feat","fix","chore","refactor","docs"]
         },
         {
