@@ -39,6 +39,7 @@ import (
 )
 
 func main() {
+
 	var configPath string
 	flag.StringVar(&configPath, "config", "./configs/config.example.json", "Path to a configuration file")
 	flag.Parse()
