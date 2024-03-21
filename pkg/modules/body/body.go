@@ -1,7 +1,11 @@
 package body
 
 import (
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+
 	"github.com/charmbracelet/huh"
+	"github.com/nantli/goodcommit/pkg/commit"
 	"github.com/nantli/goodcommit/pkg/module"
 )
 
@@ -16,7 +20,7 @@ func (b *Body) LoadConfig() error {
 	return nil
 }
 
-func (b *Body) NewField(commit *module.CommitInfo) (huh.Field, error) {
+func (b *Body) NewField(commit *commit.Config) (huh.Field, error) {
 	return huh.NewText().
 		Title("📖・Write the Commit Body").
 		Description("Provide a more detailed description of the changes (ctrl+j creates a new line).").
@@ -24,8 +28,14 @@ func (b *Body) NewField(commit *module.CommitInfo) (huh.Field, error) {
 		Editor("vim"), nil
 }
 
-func (b *Body) PostProcess(commit *module.CommitInfo) error {
-	// No post-processing needed for this module.
+func (b *Body) PostProcess(commit *commit.Config) error {
+	// Capitalize first letter of body
+	caser := cases.Title(language.English)
+	commit.Body = caser.String(commit.Body[:1]) + commit.Body[1:]
+	// Add a period at the end of the body if it doesn't have one
+	if commit.Body[len(commit.Body)-1] != '.' {
+		commit.Body += "."
+	}
 	return nil
 }
 
@@ -41,7 +51,7 @@ func (b *Body) SetConfig(config module.Config) {
 	b.config = config
 }
 
-func (b *Body) InitCommitInfo(commit *module.CommitInfo) error {
+func (b *Body) InitCommitInfo(commit *commit.Config) error {
 	// No initialization needed for this module.
 	return nil
 }

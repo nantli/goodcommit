@@ -4,22 +4,32 @@
             "id": "feat",
             "name": "Feat",
             "emoji": "🌟",
-            "title": "New feature",
-            "description": "Correlates with MINOR in Semantic Versioning"
+            "title": "New commit introduces a new feature"
         },
         {
             "id": "fix",
             "name": "Fix",
             "emoji": "🐛",
-            "title": "This commit patches a bug",
-            "description": "Correlates with PATCH in Semantic Versioning"
+            "title": "This commit patches a bug"
+        },
+        {
+            "id": "refactor",
+            "name": "Refactor",
+            "emoji": "🧰",
+            "title": "Use this when improving the codebase"
+        },
+        {
+            "id": "docs",
+            "name": "Docs",
+            "emoji": "📝",
+            "title": "Use this when updating documentation"
         },
         {
             "id": "chore",
             "name": "Chore",
             "emoji": "🧰",
-            "title": "For all other tasks",
-            "description": "For commits not adding features nor fixing anything"
+            "title": "For all other tasks"
         }
     ]
 }
+

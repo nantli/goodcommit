@@ -16,10 +16,10 @@ type Config struct {
 
 // LoadConfigToModules loads the configuration from the config file into the
 // modules.
-func LoadConfigToModules(modules []module.Module) ([]module.Module, error) {
+func LoadConfigToModules(modules []module.Module, configPath string) ([]module.Module, error) {
 	var cfg Config
 
-	raw, err := os.ReadFile("./configs/config.example.json")
+	raw, err := os.ReadFile(configPath)
 	if err != nil {
 		fmt.Println("Error occurred while reading config:", err)
 		os.Exit(1)

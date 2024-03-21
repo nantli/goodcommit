@@ -1,6 +1,9 @@
 package module
 
-import "github.com/charmbracelet/huh"
+import (
+	"github.com/charmbracelet/huh"
+	"github.com/nantli/goodcommit/pkg/commit"
+)
 
 type Config struct {
 	Page         int      `json:"page"`
@@ -25,22 +28,11 @@ type Item struct {
 
 type Module interface {
 	LoadConfig() error
-	NewField(commit *CommitInfo) (huh.Field, error)
-	PostProcess(commit *CommitInfo) error
+	NewField(commit *commit.Config) (huh.Field, error)
+	PostProcess(commit *commit.Config) error
 	GetConfig() Config
 	GetName() string
 	SetConfig(config Config)
-	InitCommitInfo(commit *CommitInfo) error
+	InitCommitInfo(commit *commit.Config) error
 	IsActive() bool
-}
-
-type CommitInfo struct {
-	Type         string
-	Scope        string
-	Description  string
-	Body         string
-	Footer       string
-	Breaking     bool
-	CoAuthoredBy []string
-	Extras       map[string]*string
 }

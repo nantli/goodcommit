@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/huh"
+	"github.com/nantli/goodcommit/pkg/commit"
 	"github.com/nantli/goodcommit/pkg/module"
 )
 
@@ -20,7 +21,7 @@ func (d *Description) LoadConfig() error {
 }
 
 // NewField returns a new Input field for the user to write a brief description of the commit (max 50 chars).
-func (d *Description) NewField(commit *module.CommitInfo) (huh.Field, error) {
+func (d *Description) NewField(commit *commit.Config) (huh.Field, error) {
 	return huh.NewInput().
 		Title("✏️・Write the Commit Description").
 		Description("Briefly describe the changes in this commit (max 50 chars).").
@@ -29,10 +30,11 @@ func (d *Description) NewField(commit *module.CommitInfo) (huh.Field, error) {
 }
 
 // PostProcess lowercases the first letter of the commit description.
-func (d *Description) PostProcess(commit *module.CommitInfo) error {
+func (d *Description) PostProcess(commit *commit.Config) error {
 	if commit.Description == "" {
 		return nil
 	}
+	commit.Description = strings.TrimSuffix(commit.Description, ".")
 	commit.Description = strings.ToLower(commit.Description[:1]) + commit.Description[1:]
 	return nil
 }
@@ -49,7 +51,7 @@ func (d *Description) GetName() string {
 	return MODULE_NAME
 }
 
-func (d *Description) InitCommitInfo(commit *module.CommitInfo) error {
+func (d *Description) InitCommitInfo(commit *commit.Config) error {
 	return nil
 }
 

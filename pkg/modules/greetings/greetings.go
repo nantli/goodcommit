@@ -11,6 +11,7 @@ import (
 	"os/exec"
 
 	"github.com/charmbracelet/huh"
+	"github.com/nantli/goodcommit/pkg/commit"
 	"github.com/nantli/goodcommit/pkg/module"
 )
 
@@ -24,7 +25,7 @@ func (g *Greetings) LoadConfig() error {
 	return nil
 }
 
-func (g *Greetings) NewField(commit *module.CommitInfo) (huh.Field, error) {
+func (g *Greetings) NewField(commit *commit.Config) (huh.Field, error) {
 	stagedFiles, err := g.getStagedFiles()
 	if err != nil {
 		return nil, fmt.Errorf("error getting staged files: %w", err)
@@ -47,7 +48,7 @@ func (g *Greetings) NewField(commit *module.CommitInfo) (huh.Field, error) {
 	), nil
 }
 
-func (g *Greetings) PostProcess(commit *module.CommitInfo) error {
+func (g *Greetings) PostProcess(commit *commit.Config) error {
 	// This module does not modify the commit info, so no post-processing is needed.
 	return nil
 }
@@ -75,7 +76,7 @@ func (g *Greetings) getStagedFiles() (string, error) {
 	return out.String(), nil
 }
 
-func (g *Greetings) InitCommitInfo(commit *module.CommitInfo) error {
+func (g *Greetings) InitCommitInfo(commit *commit.Config) error {
 	return nil
 }
 

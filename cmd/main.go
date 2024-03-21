@@ -14,9 +14,12 @@ Flags:
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"strconv"
+	"strings"
 
 	"github.com/nantli/goodcommit/pkg/commiters/goodcommiter"
 	"github.com/nantli/goodcommit/pkg/config"
@@ -36,6 +39,11 @@ import (
 )
 
 func main() {
+
+	var configPath string
+	flag.StringVar(&configPath, "config", "./configs/config.example.json", "Path to a configuration file")
+	flag.Parse()
+
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 
 	// Load modules
@@ -54,23 +62,33 @@ func main() {
 	}
 
 	// Update modules with configuration
-	modules, err := config.LoadConfigToModules(modules)
+	modules, err := config.LoadConfigToModules(modules, configPath)
 	if err != nil {
-		fmt.Println("Error occurred:", err)
+		fmt.Println("Error occurred while loading configuration:", err)
 		os.Exit(1)
 	}
 
 	// Load the default goodcommiter (a goodcommit handler)
 	defaultCommiter, err := goodcommiter.New(modules)
 	if err != nil {
-		fmt.Println("Error occurred:", err)
+		fmt.Println("Error occurred while loading commiter:", err)
 		os.Exit(1)
 	}
 
 	// Load and execute goodcommit
 	gc := goodcommit.New(defaultCommiter)
-	if err := gc.Execute(accessible); err != nil {
-		fmt.Println("Error occurred:", err)
+	message, err := gc.Execute(accessible)
+	if err != nil {
+		fmt.Println("Error occurred while running goodcommit:", err)
+		os.Exit(1)
+	}
+
+	// Commit changes, execute command
+	cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
+	cmd := exec.Command("sh", "-c", cmdStr)
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("Error executing command: %s\n", err)
 		os.Exit(1)
 	}
 }

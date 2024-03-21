@@ -17,7 +17,7 @@
             "name": "types",
             "page": 1,
             "position": 3,
-            "active": false,
+            "active": true,
             "path": "./configs/commit_types.example.json",
             "checkpoint": true
         },
@@ -25,9 +25,10 @@
             "name": "scopes",
             "page": 2,
             "position": 2,
-            "active": false,
+            "active": true,
             "path": "./configs/commit_scopes.example.json",
-            "dependencies": ["types"]
+            "dependencies": ["types"],
+            "priority": 4
         },
         {
             "name": "description",
@@ -39,20 +40,22 @@
             "name": "why",
             "page": 3,
             "position": 2,
-            "active": true
+            "active": true,
+            "priority": 3
         },
         {
             "name": "body",
             "page": 3,
             "position": 3,
-            "active": true
+            "active": true,
+            "priority": 2
         },
         {
             "name": "breaking",
             "page": 3,
             "position": 4,
             "active": true,
-            "priority": 10,
+            "priority": 5,
             "checkpoint": true
         },
         {
@@ -60,7 +63,7 @@
             "page": 4,
             "position": 1,
             "active": true,
-            "priority": 10,
+            "priority": 6,
             "dependencies": ["breaking"]
         },
         {
@@ -68,7 +71,8 @@
             "page": 5,
             "position": 1,
             "active": true,
-            "path": "./configs/commit_coauthors.example.json"
+            "path": "./configs/commit_coauthors.example.json",
+            "priority": 20
         },
         {
             "name": "signedoffby",
