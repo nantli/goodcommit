@@ -71,7 +71,8 @@
             "page": 5,
             "position": 1,
             "active": true,
-            "path": "./configs/commit_coauthors.example.json"
+            "path": "./configs/commit_coauthors.example.json",
+            "priority": 20
         },
         {
             "name": "signedoffby",

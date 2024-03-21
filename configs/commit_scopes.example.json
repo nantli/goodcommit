@@ -1,54 +1,25 @@
 {
     "scopes": [
         {
-            "id": "empty",
-            "emoji": "🐜",
-            "name": "Empty",
-            "title": "",
-            "description": "Use this for everything else",
-            "conditional": ["feat","fix", "chore"]
+            "id": "goodcommit",
+            "emoji": "🔫",
+            "name": "Goodcommit",
+            "description": "Use this when non of the other scopes appl",
+            "conditional": ["feat","fix","chore","refactor","docs"]
         },
         {
             "id": "commiters",
             "emoji": "⛓️",
             "name": "Commiters",
             "description": "Use this when changes are made to commiters",
-            "conditional": ["feat", "fix"]
+            "conditional": ["feat", "fix", "chore", "refactor", "docs"]
         },
         {
             "id": "modules",
             "emoji": "📦",
             "name": "Modules",
             "description": "Use this when changes are made to modules",
-            "conditional": ["feat", "fix"]
-        },
-        {
-            "id": "wip",
-            "emoji": "🚧",
-            "name": "WIP",
-            "description": "Use it when you need to commit but your work is still in progress",
-            "conditional": ["feat","fix","chore"]
-        },
-        {
-            "id": "refactor",
-            "emoji": "🧰",
-            "name": "Refactor",
-            "description": "Use it when improving the codebase without adding new features or fixing bugs",
-            "conditional": ["chore"]
-        },
-        {
-            "id": "dx",
-            "emoji": "💻",
-            "name": "Developer Experience",
-            "description": "Use it when improving the workflow for developers working on this repository",
-            "conditional": ["chore"]
-        },
-        {
-            "id": "documentation",
-            "emoji": "📚",
-            "name": "Documentation",
-            "description": "Use it for everything Documentation",
-            "conditional": ["chore"]
+            "conditional": ["feat", "fix", "chore", "refactor", "docs"]
         }
     ]
 }
