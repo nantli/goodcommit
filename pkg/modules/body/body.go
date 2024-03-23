@@ -29,13 +29,19 @@ func (b *Body) NewField(commit *commit.Config) (huh.Field, error) {
 }
 
 func (b *Body) PostProcess(commit *commit.Config) error {
+	if commit.Body == "" {
+		return nil
+	}
+
 	// Capitalize first letter of body
 	caser := cases.Title(language.English)
 	commit.Body = caser.String(commit.Body[:1]) + commit.Body[1:]
+
 	// Add a period at the end of the body if it doesn't have one
 	if commit.Body[len(commit.Body)-1] != '.' {
 		commit.Body += "."
 	}
+
 	return nil
 }
 

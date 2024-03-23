@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.1]
+
 ### Added
 
 - Use environment variable to set configuration file path, with `--config` flag taking precedence if both are provided. ([#14](https://github.com/nantli/goodcommit/pull/14))
@@ -13,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - Skip co-authors selection when there are 0 options available. ([#15](https://github.com/nantli/goodcommit/pull/15))
+- Fix panic when body is empty. ([#16](https://github.com/nantli/goodcommit/pull/16))
 
 ## [1.0.0]
 
@@ -33,6 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Add `--config` flag to specify a custom configuration file. ([#12](https://github.com/nantli/goodcommit/pull/12))
 - Commit staged files using the formatted commit message. ([#12](https://github.com/nantli/goodcommit/pull/12))
 
-[unreleased]: https://github.com/nantli/goodcommit/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/nantli/goodcommit/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/nantli/goodcommit/compare/v1.0.0...v1.1.1
 [1.0.0]: https://github.com/nantli/goodcommit/compare/v0.0.0...v1.0.0
 
