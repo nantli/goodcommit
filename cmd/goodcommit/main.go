@@ -40,11 +40,15 @@ import (
 
 func main() {
 
-	var configPath string
-	flag.StringVar(&configPath, "config", "./configs/config.example.json", "Path to a configuration file")
+	// Get config path from env var or flag
+	configPath := os.Getenv("GOODCOMMIT_CONFIG_PATH")
+	flag.StringVar(&configPath, "config", configPath, "Path to a configuration file")
 	flag.Parse()
 
+	// Get accessible flag from env var or flag
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
+	flag.BoolVar(&accessible, "accessible", accessible, "Enable accessible mode")
+	flag.Parse()
 
 	// Load modules
 	modules := []module.Module{

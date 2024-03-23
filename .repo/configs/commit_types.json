@@ -13,6 +13,18 @@
             "title": "This commit patches a bug"
         },
         {
+            "id": "refactor",
+            "name": "Refactor",
+            "emoji": "🧰",
+            "title": "Use this when improving the codebase"
+        },
+        {
+            "id": "docs",
+            "name": "Docs",
+            "emoji": "📝",
+            "title": "Use this when updating documentation"
+        },
+        {
             "id": "chore",
             "name": "Chore",
             "emoji": "🧰",
@@ -20,3 +32,4 @@
         }
     ]
 }
+

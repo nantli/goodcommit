@@ -5,21 +5,21 @@
             "emoji": "🔫",
             "name": "Goodcommit",
             "description": "Use this when non of the other scopes apply",
-            "conditional": ["feat","fix","chore"]
+            "conditional": ["feat","fix","chore","refactor","docs"]
         },
         {
             "id": "commiters",
             "emoji": "⛓️",
             "name": "Commiters",
             "description": "Use this when changes are made to commiters",
-            "conditional": ["feat", "fix", "chore"]
+            "conditional": ["feat", "fix", "chore", "refactor", "docs"]
         },
         {
             "id": "modules",
             "emoji": "📦",
             "name": "Modules",
             "description": "Use this when changes are made to modules",
-            "conditional": ["feat", "fix", "chore"]
+            "conditional": ["feat", "fix", "chore", "refactor", "docs"]
         }
     ]
 }
