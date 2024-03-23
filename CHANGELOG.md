@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Use environment variable to set configuration file path, with `--config` flag taking precedence if both are provided. ([#14](https://github.com/nantli/goodcommit/pull/14))
 
+### Fixed
+
+- Skip co-authors selection when there are 0 options available. ([#15](https://github.com/nantli/goodcommit/pull/15))
+
 ## [1.0.0]
 
 ### Added

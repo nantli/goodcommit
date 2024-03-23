@@ -26,11 +26,18 @@ To build `goodcommit`, ensure you have Go installed on your system. Then, follow
 
 ### Specifying a Configuration File
 
-To use a custom configuration file with `goodcommit`, specify the `--config` flag followed by the path to your configuration file (more details on configuration files below) when running the program:
+To use a custom configuration file with `goodcommit`, you have two options:
 
-```bash
-./goodcommit --config /path/to/your/config.json
-```
+1. **Using a Command Line Flag**: Specify the `--config` flag followed by the path to your configuration file when running the program:
+   ```bash
+   ./goodcommit --config /path/to/your/config.json
+   ```
+
+2. **Using an Environment Variable**: Set the `GOODCOMMIT_CONFIG_PATH` environment variable to the path of your configuration file. If both the environment variable and the `--config` flag are provided, the `--config` flag takes precedence.
+   ```bash
+   export GOODCOMMIT_CONFIG_PATH=/path/to/your/config.json
+   ./goodcommit
+   ```
 
 ## Developing New Modules
 
