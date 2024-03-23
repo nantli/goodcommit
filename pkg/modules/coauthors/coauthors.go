@@ -50,18 +50,24 @@ func (c *CoAuthors) LoadConfig() error {
 // NewField returns a MultiSelect field with options for each co-author.
 func (c *CoAuthors) NewField(commit *commit.Config) (huh.Field, error) {
 
-	// use emailCmd := exec.Command("git", "config", "--get", "user.email") to filter the author from co-authors in c.Items
+	// Get the user's email
 	emailCmd := exec.Command("git", "config", "--get", "user.email")
 	email, err := emailCmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("error getting user email: %w", err)
 	}
 	userEmail := strings.TrimSpace(string(email))
+
+	// Filter out the user's email from the co-authors
 	coAuthors := []module.Item{}
 	for _, item := range c.Items {
 		if item.Id != userEmail {
 			coAuthors = append(coAuthors, item)
 		}
+	}
+
+	if len(coAuthors) == 0 {
+		return nil, nil
 	}
 
 	var coAuthorOptions []huh.Option[string]
