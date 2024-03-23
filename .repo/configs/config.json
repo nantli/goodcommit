@@ -1,0 +1,85 @@
+{
+    "activeModules": [
+        {
+            "name": "logo",
+            "page": 1,
+            "position": 1,
+            "pinned": true,
+            "active": true
+        },
+        {
+            "name": "greetings",
+            "page": 1,
+            "position": 2,
+            "active": true
+        },
+        {
+            "name": "types",
+            "page": 1,
+            "position": 3,
+            "active": true,
+            "path": "./.repo/configs/commit_types.json",
+            "checkpoint": true
+        },
+        {
+            "name": "scopes",
+            "page": 2,
+            "position": 2,
+            "active": true,
+            "path": "./.repo/configs/commit_scopes.json",
+            "dependencies": ["types"],
+            "priority": 4
+        },
+        {
+            "name": "description",
+            "page": 3,
+            "position": 1,
+            "active": true
+        },
+        {
+            "name": "why",
+            "page": 3,
+            "position": 2,
+            "active": true,
+            "priority": 3
+        },
+        {
+            "name": "body",
+            "page": 3,
+            "position": 3,
+            "active": true,
+            "priority": 2
+        },
+        {
+            "name": "breaking",
+            "page": 3,
+            "position": 4,
+            "active": true,
+            "priority": 5,
+            "checkpoint": true
+        },
+        {
+            "name": "breakingmsg",
+            "page": 4,
+            "position": 1,
+            "active": true,
+            "priority": 6,
+            "dependencies": ["breaking"]
+        },
+        {
+            "name": "coauthors",
+            "page": 5,
+            "position": 1,
+            "active": true,
+            "path": "./.repo/configs/commit_coauthors.json",
+            "priority": 20
+        },
+        {
+            "name": "signedoffby",
+            "active": true,
+            "page": 4,
+            "position": 1
+        }
+    ]
+}
+
