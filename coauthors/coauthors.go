@@ -10,27 +10,35 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
+
+type item struct {
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Emoji       string   `json:"emoji"`
+	Conditional []string `json:"conditional"`
+}
 
 const MODULE_NAME = "coauthors"
 
-type CoAuthors struct {
-	config module.Config
-	Items  []module.Item `json:"coauthors"`
+type coAuthors struct {
+	config gc.ModuleConfig
+	Items  []item `json:"coauthors"`
 }
 
-func (c *CoAuthors) getItem(id string) module.Item {
+func (c *coAuthors) item(id string) item {
 	for _, i := range c.Items {
 		if i.Id == id {
 			return i
 		}
 	}
-	return module.Item{}
+	return item{}
 }
 
-func (c *CoAuthors) LoadConfig() error {
+func (c *coAuthors) LoadConfig() error {
 	if c.config.Path == "" {
 		return nil
 	}
@@ -48,7 +56,7 @@ func (c *CoAuthors) LoadConfig() error {
 }
 
 // NewField returns a MultiSelect field with options for each co-author.
-func (c *CoAuthors) NewField(commit *commit.Config) (huh.Field, error) {
+func (c *coAuthors) NewField(commit *gc.Commit) (huh.Field, error) {
 
 	// Get the user's email
 	emailCmd := exec.Command("git", "config", "--get", "user.email")
@@ -59,7 +67,7 @@ func (c *CoAuthors) NewField(commit *commit.Config) (huh.Field, error) {
 	userEmail := strings.TrimSpace(string(email))
 
 	// Filter out the user's email from the co-authors
-	coAuthors := []module.Item{}
+	coAuthors := []item{}
 	for _, item := range c.Items {
 		if item.Id != userEmail {
 			coAuthors = append(coAuthors, item)
@@ -82,16 +90,16 @@ func (c *CoAuthors) NewField(commit *commit.Config) (huh.Field, error) {
 		Value(&commit.CoAuthoredBy), nil
 }
 
-func (c *CoAuthors) PostProcess(commit *commit.Config) error {
+func (c *coAuthors) PostProcess(commit *gc.Commit) error {
 	coAuthors := commit.CoAuthoredBy
 	for i, coAuthor := range coAuthors {
-		coAuthors[i] = c.getItem(coAuthor).Name + " <" + c.getItem(coAuthor).Id + ">"
+		coAuthors[i] = c.item(coAuthor).Name + " <" + c.item(coAuthor).Id + ">"
 	}
 	commit.CoAuthoredBy = coAuthors
 	// Sign the commit body with the co-authors Emojis
 	emojis := []string{}
 	for _, coAuthor := range coAuthors {
-		emojis = append(emojis, c.getItem(coAuthor).Emoji)
+		emojis = append(emojis, c.item(coAuthor).Emoji)
 	}
 
 	// add emoji from author using emailCmd := exec.Command("git", "config", "--get", "user.email") to get mail and the serching with id
@@ -102,31 +110,31 @@ func (c *CoAuthors) PostProcess(commit *commit.Config) error {
 	}
 	authorId := strings.TrimSpace(string(email))
 
-	commit.Body = commit.Body + "\n\n" + c.getItem(authorId).Emoji + " " + strings.Join(emojis, " ")
+	commit.Body = commit.Body + "\n\n" + c.item(authorId).Emoji + " " + strings.Join(emojis, " ")
 	return nil
 }
 
-func (c *CoAuthors) GetConfig() module.Config {
+func (c *coAuthors) Config() gc.ModuleConfig {
 	return c.config
 }
 
-func (c *CoAuthors) SetConfig(config module.Config) {
+func (c *coAuthors) SetConfig(config gc.ModuleConfig) {
 	c.config = config
 }
 
-func (c *CoAuthors) GetName() string {
+func (c *coAuthors) Name() string {
 	return MODULE_NAME
 }
 
-func (c *CoAuthors) InitCommitInfo(commit *commit.Config) error {
+func (c *coAuthors) InitCommitInfo(commit *gc.Commit) error {
 	// No initialization needed for this module.
 	return nil
 }
 
-func (c *CoAuthors) IsActive() bool {
+func (c *coAuthors) IsActive() bool {
 	return c.config.Active
 }
 
-func New() module.Module {
-	return &CoAuthors{config: module.Config{Name: MODULE_NAME}}
+func New() gc.Module {
+	return &coAuthors{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

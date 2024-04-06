@@ -4,24 +4,23 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
 
 const MODULE_NAME = "breakingmsg"
 
-type BreakingMsg struct {
-	config module.Config
+type breakingMsg struct {
+	config gc.ModuleConfig
 }
 
-func (bm *BreakingMsg) LoadConfig() error {
+func (bm *breakingMsg) LoadConfig() error {
 	// Load configuration if necessary
 	return nil
 }
 
-func (bm *BreakingMsg) NewField(commit *commit.Config) (huh.Field, error) {
+func (bm *breakingMsg) NewField(commit *gc.Commit) (huh.Field, error) {
 	// Only show this field if the commit is marked as breaking and not a chore
 	if commit.Breaking && commit.Type != "chore" {
 		return huh.NewText().
@@ -33,7 +32,7 @@ func (bm *BreakingMsg) NewField(commit *commit.Config) (huh.Field, error) {
 	return nil, nil
 }
 
-func (bm *BreakingMsg) PostProcess(commit *commit.Config) error {
+func (bm *breakingMsg) PostProcess(commit *gc.Commit) error {
 	if commit.Extras["breakingmsg"] == nil || *commit.Extras["breakingmsg"] == "" {
 		return nil
 	}
@@ -49,28 +48,28 @@ func (bm *BreakingMsg) PostProcess(commit *commit.Config) error {
 	return nil
 }
 
-func (bm *BreakingMsg) GetConfig() module.Config {
+func (bm *breakingMsg) Config() gc.ModuleConfig {
 	return bm.config
 }
 
-func (bm *BreakingMsg) SetConfig(config module.Config) {
+func (bm *breakingMsg) SetConfig(config gc.ModuleConfig) {
 	bm.config = config
 }
 
-func (bm *BreakingMsg) GetName() string {
+func (bm *breakingMsg) Name() string {
 	return MODULE_NAME
 }
 
-func (bm *BreakingMsg) InitCommitInfo(commit *commit.Config) error {
+func (bm *breakingMsg) InitCommitInfo(commit *gc.Commit) error {
 	placeholder := ""
 	commit.Extras["breakingmsg"] = &placeholder
 	return nil
 }
 
-func (bm *BreakingMsg) IsActive() bool {
+func (bm *breakingMsg) IsActive() bool {
 	return bm.config.Active
 }
 
-func New() module.Module {
-	return &BreakingMsg{config: module.Config{Name: MODULE_NAME}}
+func New() gc.Module {
+	return &breakingMsg{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

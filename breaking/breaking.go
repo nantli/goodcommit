@@ -4,22 +4,21 @@ package breaking
 
 import (
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
 
 const MODULE_NAME = "breaking"
 
-type Breaking struct {
-	config module.Config
+type breaking struct {
+	config gc.ModuleConfig
 }
 
-func (b *Breaking) LoadConfig() error {
+func (b *breaking) LoadConfig() error {
 	return nil
 }
 
 // NewField returns a new Confirm field for the user to indicate whether the commit introduces a breaking change.
-func (b *Breaking) NewField(commit *commit.Config) (huh.Field, error) {
+func (b *breaking) NewField(commit *gc.Commit) (huh.Field, error) {
 
 	return huh.NewConfirm().
 		Title("☎️・Does this commit introduce a Breaking Change?").
@@ -29,32 +28,32 @@ func (b *Breaking) NewField(commit *commit.Config) (huh.Field, error) {
 }
 
 // PostProcess adds ! symbol to commit type if the commit is a breaking change
-func (b *Breaking) PostProcess(commit *commit.Config) error {
+func (b *breaking) PostProcess(commit *gc.Commit) error {
 
 	return nil
 }
 
-func (b *Breaking) GetConfig() module.Config {
+func (b *breaking) Config() gc.ModuleConfig {
 	return b.config
 }
 
-func (b *Breaking) SetConfig(config module.Config) {
+func (b *breaking) SetConfig(config gc.ModuleConfig) {
 	b.config = config
 }
 
-func (b *Breaking) GetName() string {
+func (b *breaking) Name() string {
 	return MODULE_NAME
 }
 
-func (b *Breaking) InitCommitInfo(commit *commit.Config) error {
+func (b *breaking) InitCommitInfo(commit *gc.Commit) error {
 	// No initialization needed for this module.
 	return nil
 }
 
-func (b *Breaking) IsActive() bool {
+func (b *breaking) IsActive() bool {
 	return b.config.Active
 }
 
-func New() module.Module {
-	return &Breaking{config: module.Config{Name: MODULE_NAME}}
+func New() gc.Module {
+	return &breaking{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

@@ -7,18 +7,26 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
+
+type item struct {
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Emoji       string   `json:"emoji"`
+	Conditional []string `json:"conditional"`
+}
 
 const MODULE_NAME = "types"
 
-type Types struct {
-	config module.Config
-	Items  []module.Item `json:"types"`
+type types struct {
+	config gc.ModuleConfig
+	Items  []item `json:"types"`
 }
 
-func (t *Types) LoadConfig() error {
+func (t *types) LoadConfig() error {
 
 	if t.config.Path == "" {
 		return nil
@@ -38,7 +46,7 @@ func (t *Types) LoadConfig() error {
 	return nil
 }
 
-func (t *Types) NewField(commit *commit.Config) (huh.Field, error) {
+func (t *types) NewField(commit *gc.Commit) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
 	for _, i := range t.Items {
@@ -51,7 +59,7 @@ func (t *Types) NewField(commit *commit.Config) (huh.Field, error) {
 		Value(&commit.Type), nil
 }
 
-func (t *Types) PostProcess(commit *commit.Config) error {
+func (t *types) PostProcess(commit *gc.Commit) error {
 	if commit.Type == "" && t.IsActive() {
 		return fmt.Errorf("commit type is required")
 	}
@@ -59,15 +67,15 @@ func (t *Types) PostProcess(commit *commit.Config) error {
 	return nil
 }
 
-func (t *Types) GetConfig() module.Config {
+func (t *types) Config() gc.ModuleConfig {
 	return t.config
 }
 
-func (t *Types) SetConfig(config module.Config) {
+func (t *types) SetConfig(config gc.ModuleConfig) {
 	t.config = config
 }
 
-func (s *Types) Debug() error {
+func (s *types) Debug() error {
 	// print configuration and items in a human readable format
 	fmt.Println(s.config)
 	fmt.Println(s.Items)
@@ -75,18 +83,18 @@ func (s *Types) Debug() error {
 	return nil
 }
 
-func (t *Types) GetName() string {
+func (t *types) Name() string {
 	return MODULE_NAME
 }
 
-func (t *Types) InitCommitInfo(commit *commit.Config) error {
+func (t *types) InitCommitInfo(commit *gc.Commit) error {
 	return nil
 }
 
-func (t *Types) IsActive() bool {
+func (t *types) IsActive() bool {
 	return t.config.Active
 }
 
-func New() module.Module {
-	return &Types{config: module.Config{Name: MODULE_NAME}, Items: []module.Item{}}
+func New() gc.Module {
+	return &types{config: gc.ModuleConfig{Name: MODULE_NAME}, Items: []item{}}
 }

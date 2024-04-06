@@ -11,21 +11,20 @@ import (
 	"os/exec"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
 
 const MODULE_NAME = "greetings"
 
-type Greetings struct {
-	config module.Config
+type greetings struct {
+	config gc.ModuleConfig
 }
 
-func (g *Greetings) LoadConfig() error {
+func (g *greetings) LoadConfig() error {
 	return nil
 }
 
-func (g *Greetings) NewField(commit *commit.Config) (huh.Field, error) {
+func (g *greetings) NewField(commit *gc.Commit) (huh.Field, error) {
 	stagedFiles, err := g.getStagedFiles()
 	if err != nil {
 		return nil, fmt.Errorf("error getting staged files: %w", err)
@@ -48,24 +47,24 @@ func (g *Greetings) NewField(commit *commit.Config) (huh.Field, error) {
 	), nil
 }
 
-func (g *Greetings) PostProcess(commit *commit.Config) error {
+func (g *greetings) PostProcess(commit *gc.Commit) error {
 	// This module does not modify the commit info, so no post-processing is needed.
 	return nil
 }
 
-func (g *Greetings) GetConfig() module.Config {
+func (g *greetings) Config() gc.ModuleConfig {
 	return g.config
 }
 
-func (g *Greetings) SetConfig(config module.Config) {
+func (g *greetings) SetConfig(config gc.ModuleConfig) {
 	g.config = config
 }
 
-func (g *Greetings) GetName() string {
+func (g *greetings) Name() string {
 	return MODULE_NAME
 }
 
-func (g *Greetings) getStagedFiles() (string, error) {
+func (g *greetings) getStagedFiles() (string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -76,14 +75,14 @@ func (g *Greetings) getStagedFiles() (string, error) {
 	return out.String(), nil
 }
 
-func (g *Greetings) InitCommitInfo(commit *commit.Config) error {
+func (g *greetings) InitCommitInfo(commit *gc.Commit) error {
 	return nil
 }
 
-func (g *Greetings) IsActive() bool {
+func (g *greetings) IsActive() bool {
 	return g.config.Active
 }
 
-func New() module.Module {
-	return &Greetings{config: module.Config{Name: MODULE_NAME}}
+func New() gc.Module {
+	return &greetings{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

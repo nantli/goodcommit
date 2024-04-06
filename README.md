@@ -43,93 +43,106 @@ To use a custom configuration file with `goodcommit`, you have two options:
 
 Modules in `goodcommit` allow for extensibility and customization of the commit form. To develop a new module, follow these steps:
 
-1. **Create a New Module File**: In `pkg/modules/`, create a new Go file for your module, e.g., `mymodule.go`.
+1. **Create a New Module File**: In the root directory of the project, create a new Go file for your module, e.g., `mymodule.go`.
 
-2. **Define Your Module Struct**: Implement the `module.Module` interface.
-   ```go
-   package mymodule
+2. **Define Your Module Struct**: Implement the `gc.Module` interface.
 
-   import (
-       "github.com/charmbracelet/huh"
-       "github.com/nantli/goodcommit/pkg/module"
-   )
+```go
+package mymodule
 
-   type MyModule struct {
-       config module.Config
-   }
+import (
+    "github.com/charmbracelet/huh"
+    gc "github.com/nantli/goodcommit"
+)
 
-   // Implement interface methods: LoadConfig, NewField, PostProcess, etc.
-   ```
+type myModule struct {
+    config gc.ModuleConfig
+}
 
-3. **Implement Required Methods**: At minimum, implement `LoadConfig`, `NewField`, `PostProcess`, `GetConfig`, `GetName`, `PostProccess`, `InitCommitInfo`, and `IsActive` methods as per your module's functionality.
+// Implement interface methods: LoadConfig, NewField, PostProcess, etc.
+```
 
-4. **Register Your Module**: In `cmd/main.go`, import your module and add it to the `modules` slice.
-   ```go
-   import (
-       "github.com/nantli/goodcommit/pkg/modules/mymodule"
-   )
 
-   func main() {
-       // Other modules...
-       myModule := mymodule.New()
-       modules = append(modules, myModule)
-       // Continue setup...
-   }
-   ```
+3. **Implement Required Methods**: At minimum, implement `LoadConfig`, `NewField`, `PostProcess`, `Config`, `Name`, `InitCommitInfo`, and `IsActive` methods as per your module's functionality.
+
+4. **Register Your Module**: In your own implementation of `cmd/goodcommit/main.go`, import your goodcommit module and add it to the `modules` slice.
+
+```go
+import (
+    "github.com/nantli/goodcommit/mymodule"
+)
+
+func main() {
+
+// Other modules...
+myModule := mymodule.New()
+modules = append(modules, myModule)
+
+// Continue setup...
+```
+
 
 ## Creating Your Own Commiter
 
-If using the default commiter is not good enough for you, you can create your own commiter that implements the `Commiter` interface. This allows you to define how the commit form operates, handles input, or processes the final commit message. Here's how:
+If using the default commiter is not good enough for you, you can create your own commiter that implements the `gc.Commiter` interface. This allows you to define how the commit form operates, handles input, or processes the final commit message. Here's how:
 
-1. **Define Your Commiter**: Create a new Go file in `pkg/commiters/yourcommiter/`. Define a struct that implements the `Commiter` interface from `pkg/commiter/commiter.go`.
+1. **Define Your Commiter**: Create a new Go file in the root directory of the project, e.g., `yourcommiter.go`. Define a struct that implements the `gc.Commiter` interface.
 
-   ```go
-   package yourcommiter
+```go
+package yourcommiter
 
-   import "github.com/nantli/goodcommit/pkg/commiter"
+import gc "github.com/nantli/goodcommit"
 
-   type YourCommiter struct {
-       // Your fields here
-   }
+type yourCommiter struct {
+    // Your fields here
+}
 
-   func (yc *YourCommiter) RunForm(accessible bool) error {
-       // Implement how your commiter runs the form
-   }
+func (yc yourCommiter) LoadModules(modules []gc.Module) error {
+    // Implement how your commiter loads the modules
+}
 
-   func (yc *YourCommiter) RunPostProcessing() error {
-       // Implement any post-processing steps
-   }
+func (yc yourCommiter) RunForm(accessible bool) error {
+    // Implement how your commiter runs the form
+}
 
-   func (yc *YourCommiter) PreviewCommit() {
-       // Implement how to preview the commit
-   }
+func (yc yourCommiter) RunPostProcessing() error {
+    // Implement any post-processing steps 
+}
 
-   func (yc *YourCommiter) RenderMessage() error {
-       // Implement how to render the commit message
-   }
-   ```
+func (yc yourCommiter) PreviewCommit() {
+    // Implement how your commiter previews the commit
+}
 
-2. **Register Your Commiter**: In your `main.go`, import your commiter and use it when creating a new `GoodCommit` instance.
+func (yc yourCommiter) RenderMessage() string {
+    // Implement how your commiter renders the final commit message
+}
+```
 
-   ```go:cmd/main.go
-   import (
-       "github.com/nantli/goodcommit/pkg/goodcommit"
-       "github.com/nantli/goodcommit/pkg/commiters/yourcommiter"
-   )
+2. **Use Your Commiter**: In your own implementation of `cmd/goodcommit/main.go`, replace the default commiter with your custom commiter.
 
-   func main() {
-       // ...
-       // Initialize your commiter
-       yourCommiter := yourcommiter.New(modules)
-       // Create a GoodCommit instance with your commiter
-       goodcommit := goodcommit.New(yourCommiter)
-       // Execute
-       if err := goodcommit.Execute(accessible); err != nil {
-           fmt.Println("Error occurred:", err)
-           os.Exit(1)
-       }
-   }
-   ```
+```go:cmd/goodcommit/main.go
+import (
+    gc "github.com/nantli/goodcommit"
+    "github.com/username/module/yourcommiter"
+)
+
+func main() {
+    // ...
+    // Initialize your commiter
+    yourCommiter := yourcommiter.New()
+    err = yourCommiter.LoadModules(modules)
+    if err != nil {
+        fmt.Println("Error occurred while loading modules:", err) os.Exit(1) 
+    }
+
+    goodcommit := gc.New(yourCommiter)
+    // Execute
+    if err := goodcommit.Execute(accessible); err != nil {
+        fmt.Println("Error occurred:", err)
+        os.Exit(1)
+    }
+}
+```
 
 3. **Test Your Commiter**: After implementing your commiter, test it thoroughly to ensure it works as expected with the `goodcommit` form.
 

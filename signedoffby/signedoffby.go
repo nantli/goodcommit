@@ -6,27 +6,26 @@ import (
 	"os/exec"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
 
 const MODULE_NAME = "signedoffby"
 
-type SignedOffBy struct {
-	config module.Config
+type signedOffBy struct {
+	config gc.ModuleConfig
 }
 
-func (s *SignedOffBy) LoadConfig() error {
+func (s *signedOffBy) LoadConfig() error {
 	// Load any necessary configuration. For this module, it might be inactive or active.
 	return nil
 }
 
-func (s *SignedOffBy) NewField(commit *commit.Config) (huh.Field, error) {
+func (s *signedOffBy) NewField(commit *gc.Commit) (huh.Field, error) {
 	// This module does not require input from the user.
 	return nil, nil
 }
 
-func (s *SignedOffBy) PostProcess(commit *commit.Config) error {
+func (s *signedOffBy) PostProcess(commit *gc.Commit) error {
 	// Execute the command to get the user's name from Git config
 	nameCmd := exec.Command("git", "config", "--get", "user.name")
 	var nameOut bytes.Buffer
@@ -52,27 +51,27 @@ func (s *SignedOffBy) PostProcess(commit *commit.Config) error {
 	return nil
 }
 
-func (s *SignedOffBy) GetConfig() module.Config {
+func (s *signedOffBy) Config() gc.ModuleConfig {
 	return s.config
 }
 
-func (s *SignedOffBy) SetConfig(config module.Config) {
+func (s *signedOffBy) SetConfig(config gc.ModuleConfig) {
 	s.config = config
 }
 
-func (s *SignedOffBy) GetName() string {
+func (s *signedOffBy) Name() string {
 	return MODULE_NAME
 }
 
-func (s *SignedOffBy) IsActive() bool {
+func (s *signedOffBy) IsActive() bool {
 	return s.config.Active
 }
 
-func (s *SignedOffBy) InitCommitInfo(commit *commit.Config) error {
+func (s *signedOffBy) InitCommitInfo(commit *gc.Commit) error {
 	// Initialize any necessary fields in CommitInfo.
 	return nil
 }
 
-func New() module.Module {
-	return &SignedOffBy{}
+func New() gc.Module {
+	return &signedOffBy{}
 }

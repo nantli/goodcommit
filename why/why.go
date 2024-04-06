@@ -6,25 +6,24 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
 
 const MODULE_NAME = "why"
 
-type Why struct {
-	config module.Config
+type why struct {
+	config gc.ModuleConfig
 }
 
-func (w *Why) LoadConfig() error {
+func (w *why) LoadConfig() error {
 	// Load any necessary configuration for the Why module.
 	return nil
 }
 
 // NewField returns a new Input field for the user to explain why the change was needed.
-func (w *Why) NewField(commit *commit.Config) (huh.Field, error) {
+func (w *why) NewField(commit *gc.Commit) (huh.Field, error) {
 	return huh.NewInput().
 		Title("❔・Why was this change needed?").
 		Description("Explain the reason for this change (max 100 chars).").
@@ -33,7 +32,7 @@ func (w *Why) NewField(commit *commit.Config) (huh.Field, error) {
 }
 
 // PostProcess prepends the value of the Why field to the commit body
-func (w *Why) PostProcess(commit *commit.Config) error {
+func (w *why) PostProcess(commit *gc.Commit) error {
 	if commit.Extras["why"] == nil || *commit.Extras["why"] == "" {
 		return nil
 	}
@@ -49,28 +48,28 @@ func (w *Why) PostProcess(commit *commit.Config) error {
 	return nil
 }
 
-func (w *Why) GetConfig() module.Config {
+func (w *why) Config() gc.ModuleConfig {
 	return w.config
 }
 
-func (w *Why) SetConfig(config module.Config) {
+func (w *why) SetConfig(config gc.ModuleConfig) {
 	w.config = config
 }
 
-func (w *Why) GetName() string {
+func (w *why) Name() string {
 	return MODULE_NAME
 }
 
-func (w *Why) InitCommitInfo(commit *commit.Config) error {
+func (w *why) InitCommitInfo(commit *gc.Commit) error {
 	placeholder := ""
 	commit.Extras["why"] = &placeholder
 	return nil
 }
 
-func (w *Why) IsActive() bool {
+func (w *why) IsActive() bool {
 	return w.config.Active
 }
 
-func New() module.Module {
-	return &Why{config: module.Config{Name: MODULE_NAME}}
+func New() gc.Module {
+	return &why{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }
