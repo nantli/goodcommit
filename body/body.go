@@ -5,22 +5,21 @@ import (
 	"golang.org/x/text/language"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
 
 const MODULE_NAME = "body"
 
-type Body struct {
-	config module.Config
+type body struct {
+	config gc.ModuleConfig
 }
 
-func (b *Body) LoadConfig() error {
+func (b *body) LoadConfig() error {
 	// No configuration to load for this module.
 	return nil
 }
 
-func (b *Body) NewField(commit *commit.Config) (huh.Field, error) {
+func (b *body) NewField(commit *gc.Commit) (huh.Field, error) {
 	return huh.NewText().
 		Title("📖・Write the Commit Body").
 		Description("Provide a more detailed description of the changes (ctrl+j creates a new line).").
@@ -28,7 +27,7 @@ func (b *Body) NewField(commit *commit.Config) (huh.Field, error) {
 		Editor("vim"), nil
 }
 
-func (b *Body) PostProcess(commit *commit.Config) error {
+func (b *body) PostProcess(commit *gc.Commit) error {
 	if commit.Body == "" {
 		return nil
 	}
@@ -45,27 +44,27 @@ func (b *Body) PostProcess(commit *commit.Config) error {
 	return nil
 }
 
-func (b *Body) GetName() string {
+func (b *body) Name() string {
 	return MODULE_NAME
 }
 
-func (b *Body) GetConfig() module.Config {
+func (b *body) Config() gc.ModuleConfig {
 	return b.config
 }
 
-func (b *Body) SetConfig(config module.Config) {
+func (b *body) SetConfig(config gc.ModuleConfig) {
 	b.config = config
 }
 
-func (b *Body) InitCommitInfo(commit *commit.Config) error {
+func (b *body) InitCommitInfo(commit *gc.Commit) error {
 	// No initialization needed for this module.
 	return nil
 }
 
-func (b *Body) IsActive() bool {
+func (b *body) IsActive() bool {
 	return b.config.Active
 }
 
-func New() module.Module {
-	return &Body{config: module.Config{Name: MODULE_NAME}}
+func New() gc.Module {
+	return &body{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

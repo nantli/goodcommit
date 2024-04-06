@@ -7,27 +7,35 @@ import (
 	"slices"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
+
+type item struct {
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Emoji       string   `json:"emoji"`
+	Conditional []string `json:"conditional"`
+}
 
 const MODULE_NAME = "scopes"
 
-type Scopes struct {
-	config module.Config
-	Items  []module.Item `json:"scopes"`
+type scopes struct {
+	config gc.ModuleConfig
+	Items  []item `json:"scopes"`
 }
 
-func (s *Scopes) getItem(id string) module.Item {
+func (s *scopes) item(id string) item {
 	for _, i := range s.Items {
 		if i.Id == id {
 			return i
 		}
 	}
-	return module.Item{}
+	return item{}
 }
 
-func (s *Scopes) LoadConfig() error {
+func (s *scopes) LoadConfig() error {
 
 	if s.config.Path == "" {
 		return nil
@@ -47,7 +55,7 @@ func (s *Scopes) LoadConfig() error {
 	return nil
 }
 
-func (s *Scopes) NewField(commit *commit.Config) (huh.Field, error) {
+func (s *scopes) NewField(commit *gc.Commit) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
 	for _, i := range s.Items {
@@ -67,28 +75,28 @@ func (s *Scopes) NewField(commit *commit.Config) (huh.Field, error) {
 		Value(&commit.Scope), nil
 }
 
-func (s *Scopes) PostProcess(commit *commit.Config) error {
+func (s *scopes) PostProcess(commit *gc.Commit) error {
 	if commit.Scope == "" && s.IsActive() {
 		return fmt.Errorf("commit scope is required")
 	}
 	scopeId := commit.Scope
-	commit.Scope = s.getItem(scopeId).Emoji
+	commit.Scope = s.item(scopeId).Emoji
 	if scopeId != "empty" {
-		commit.Body = fmt.Sprintf("SCOPE: %s\n%s", s.getItem(scopeId).Name, commit.Body)
+		commit.Body = fmt.Sprintf("SCOPE: %s\n%s", s.item(scopeId).Name, commit.Body)
 	}
 
 	return nil
 }
 
-func (s *Scopes) GetConfig() module.Config {
+func (s *scopes) Config() gc.ModuleConfig {
 	return s.config
 }
 
-func (s *Scopes) SetConfig(config module.Config) {
+func (s *scopes) SetConfig(config gc.ModuleConfig) {
 	s.config = config
 }
 
-func (s *Scopes) Debug() error {
+func (s *scopes) Debug() error {
 	// print configuration and items in a human readable format
 	fmt.Println(s.config)
 	fmt.Println(s.Items)
@@ -96,18 +104,18 @@ func (s *Scopes) Debug() error {
 	return nil
 }
 
-func (s *Scopes) GetName() string {
+func (s *scopes) Name() string {
 	return MODULE_NAME
 }
 
-func (s *Scopes) InitCommitInfo(commit *commit.Config) error {
+func (s *scopes) InitCommitInfo(commit *gc.Commit) error {
 	return nil
 }
 
-func (s *Scopes) IsActive() bool {
+func (s *scopes) IsActive() bool {
 	return s.config.Active
 }
 
-func New() module.Module {
-	return &Scopes{config: module.Config{Name: MODULE_NAME}, Items: []module.Item{}}
+func New() gc.Module {
+	return &scopes{config: gc.ModuleConfig{Name: MODULE_NAME}, Items: []item{}}
 }

@@ -6,22 +6,21 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/huh"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
 
 const MODULE_NAME = "description"
 
-type Description struct {
-	config module.Config
+type description struct {
+	config gc.ModuleConfig
 }
 
-func (d *Description) LoadConfig() error {
+func (d *description) LoadConfig() error {
 	return nil
 }
 
 // NewField returns a new Input field for the user to write a brief description of the commit (max 50 chars).
-func (d *Description) NewField(commit *commit.Config) (huh.Field, error) {
+func (d *description) NewField(commit *gc.Commit) (huh.Field, error) {
 	return huh.NewInput().
 		Title("✏️・Write the Commit Description").
 		Description("Briefly describe the changes in this commit (max 50 chars).").
@@ -30,7 +29,7 @@ func (d *Description) NewField(commit *commit.Config) (huh.Field, error) {
 }
 
 // PostProcess lowercases the first letter of the commit description.
-func (d *Description) PostProcess(commit *commit.Config) error {
+func (d *description) PostProcess(commit *gc.Commit) error {
 	if commit.Description == "" {
 		return nil
 	}
@@ -39,26 +38,26 @@ func (d *Description) PostProcess(commit *commit.Config) error {
 	return nil
 }
 
-func (d *Description) GetConfig() module.Config {
+func (d *description) Config() gc.ModuleConfig {
 	return d.config
 }
 
-func (d *Description) SetConfig(config module.Config) {
+func (d *description) SetConfig(config gc.ModuleConfig) {
 	d.config = config
 }
 
-func (d *Description) GetName() string {
+func (d *description) Name() string {
 	return MODULE_NAME
 }
 
-func (d *Description) InitCommitInfo(commit *commit.Config) error {
+func (d *description) InitCommitInfo(commit *gc.Commit) error {
 	return nil
 }
 
-func (d *Description) IsActive() bool {
+func (d *description) IsActive() bool {
 	return d.config.Active
 }
 
-func New() module.Module {
-	return &Description{config: module.Config{Name: MODULE_NAME}}
+func New() gc.Module {
+	return &description{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

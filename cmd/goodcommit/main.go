@@ -21,21 +21,19 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nantli/goodcommit/pkg/commiters/goodcommiter"
-	"github.com/nantli/goodcommit/pkg/config"
-	"github.com/nantli/goodcommit/pkg/goodcommit"
-	"github.com/nantli/goodcommit/pkg/module"
-	"github.com/nantli/goodcommit/pkg/modules/body"
-	"github.com/nantli/goodcommit/pkg/modules/breaking"
-	"github.com/nantli/goodcommit/pkg/modules/breakingmsg"
-	"github.com/nantli/goodcommit/pkg/modules/coauthors"
-	"github.com/nantli/goodcommit/pkg/modules/description"
-	"github.com/nantli/goodcommit/pkg/modules/greetings"
-	"github.com/nantli/goodcommit/pkg/modules/logo"
-	"github.com/nantli/goodcommit/pkg/modules/scopes"
-	"github.com/nantli/goodcommit/pkg/modules/signedoffby"
-	"github.com/nantli/goodcommit/pkg/modules/types"
-	"github.com/nantli/goodcommit/pkg/modules/why"
+	gc "github.com/nantli/goodcommit"
+	"github.com/nantli/goodcommit/body"
+	"github.com/nantli/goodcommit/breaking"
+	"github.com/nantli/goodcommit/breakingmsg"
+	"github.com/nantli/goodcommit/coauthors"
+	"github.com/nantli/goodcommit/description"
+	"github.com/nantli/goodcommit/goodcommiter"
+	"github.com/nantli/goodcommit/greetings"
+	"github.com/nantli/goodcommit/logo"
+	"github.com/nantli/goodcommit/scopes"
+	"github.com/nantli/goodcommit/signedoffby"
+	"github.com/nantli/goodcommit/types"
+	"github.com/nantli/goodcommit/why"
 )
 
 func main() {
@@ -51,7 +49,7 @@ func main() {
 	flag.Parse()
 
 	// Load modules
-	modules := []module.Module{
+	modules := []gc.Module{
 		logo.New(),
 		greetings.New(),
 		types.New(),
@@ -66,22 +64,27 @@ func main() {
 	}
 
 	// Update modules with configuration
-	modules, err := config.LoadConfigToModules(modules, configPath)
+	modules, err := gc.LoadConfigToModules(modules, configPath)
 	if err != nil {
 		fmt.Println("Error occurred while loading configuration:", err)
 		os.Exit(1)
 	}
 
-	// Load the default goodcommiter (a goodcommit handler)
-	defaultCommiter, err := goodcommiter.New(modules)
+	// Load the modules to the default commiter
+	defaultCommiter, err := goodcommiter.New()
 	if err != nil {
 		fmt.Println("Error occurred while loading commiter:", err)
 		os.Exit(1)
 	}
+	err = defaultCommiter.LoadModules(modules)
+	if err != nil {
+		fmt.Println("Error occurred while loading modules:", err)
+		os.Exit(1)
+	}
 
 	// Load and execute goodcommit
-	gc := goodcommit.New(defaultCommiter)
-	message, err := gc.Execute(accessible)
+	goodcommit := gc.New(defaultCommiter)
+	message, err := goodcommit.Execute(accessible)
 	if err != nil {
 		fmt.Println("Error occurred while running goodcommit:", err)
 		os.Exit(1)

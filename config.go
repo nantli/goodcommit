@@ -1,23 +1,19 @@
-// Package config provides the Config struct and methods for loading the
-// configuration from a file into the modules.
-package config
+package goodcommit
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
-
-	"github.com/nantli/goodcommit/pkg/module"
 )
 
-type Config struct {
-	ModulesToActivate []module.Config `json:"activeModules"`
+type config struct {
+	ModulesToActivate []ModuleConfig `json:"activeModules"`
 }
 
 // LoadConfigToModules loads the configuration from the config file into the
 // modules.
-func LoadConfigToModules(modules []module.Module, configPath string) ([]module.Module, error) {
-	var cfg Config
+func LoadConfigToModules(modules []Module, configPath string) ([]Module, error) {
+	var cfg config
 
 	raw, err := os.ReadFile(configPath)
 	if err != nil {
@@ -44,7 +40,7 @@ func LoadConfigToModules(modules []module.Module, configPath string) ([]module.M
 	// Second pass: Filter modules based on dependencies being met
 	for _, mc := range cfg.ModulesToActivate {
 		for _, m := range modules {
-			if m.GetName() == mc.Name && mc.Active { // Ensure module is active before checking dependencies
+			if m.Name() == mc.Name && mc.Active { // Ensure module is active before checking dependencies
 				// Check if all dependencies are met
 				allDependenciesMet := true
 				for _, dep := range mc.Dependencies {

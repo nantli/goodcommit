@@ -10,29 +10,28 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/nantli/goodcommit/pkg/commit"
-	"github.com/nantli/goodcommit/pkg/module"
+	gc "github.com/nantli/goodcommit"
 )
 
-type GoodCommiter struct {
-	modules []module.Module
-	commit  commit.Config
+type goodCommiter struct {
+	modules []gc.Module
+	commit  gc.Commit
 }
 
-func (c *GoodCommiter) RunForm(accessible bool) error {
-	modulesByPage := make(map[int][]*module.Module)
-	pinnedModules := make(map[*module.Module][]int)
+func (c *goodCommiter) RunForm(accessible bool) error {
+	modulesByPage := make(map[int][]*gc.Module)
+	pinnedModules := make(map[*gc.Module][]int)
 	var maxPage int // Track the maximum page number
 
 	// First pass: Iterate over the modules to populate modulesByPage and track pinned modules
 	for _, m := range c.modules {
 		if m.IsActive() {
-			page := m.GetConfig().Page
+			page := m.Config().Page
 			if page > maxPage {
 				maxPage = page // Update maxPage if the current page is higher
 			}
 			modulesByPage[page] = append(modulesByPage[page], &m)
-			if m.GetConfig().Pinned {
+			if m.Config().Pinned {
 				// If the module is pinned, track it for addition to subsequent pages
 				for p := page + 1; p <= 30; p++ { // Assuming a max of 20 pages for simplicity
 					pinnedModules[&m] = append(pinnedModules[&m], p)
@@ -63,13 +62,13 @@ func (c *GoodCommiter) RunForm(accessible bool) error {
 		// Sort the modules by position
 		sort.Slice(modulesByPage[page], func(i, j int) bool {
 			mi, mj := *modulesByPage[page][i], *modulesByPage[page][j]
-			if mi.GetConfig().Page == mj.GetConfig().Page {
-				if mi.GetConfig().Pinned == mj.GetConfig().Pinned {
-					return mi.GetConfig().Position < mj.GetConfig().Position
+			if mi.Config().Page == mj.Config().Page {
+				if mi.Config().Pinned == mj.Config().Pinned {
+					return mi.Config().Position < mj.Config().Position
 				}
-				return mi.GetConfig().Pinned && !mj.GetConfig().Pinned
+				return mi.Config().Pinned && !mj.Config().Pinned
 			}
-			return mi.GetConfig().Page < mj.GetConfig().Page
+			return mi.Config().Page < mj.Config().Page
 		})
 
 		var fields []huh.Field
@@ -81,7 +80,7 @@ func (c *GoodCommiter) RunForm(accessible bool) error {
 				return err
 			}
 
-			if !(*m).GetConfig().Pinned && field != nil && (*m).GetConfig().Active {
+			if !(*m).Config().Pinned && field != nil && (*m).Config().Active {
 				pageHasNonPinned[page] = true // Mark page as having non-pinned modules
 			}
 
@@ -98,7 +97,7 @@ func (c *GoodCommiter) RunForm(accessible bool) error {
 
 		// Check if any module in the page has the checkpoint set to true
 		for _, m := range modulesByPage[page] {
-			if (*m).GetConfig().Checkpoint {
+			if (*m).Config().Checkpoint {
 				// Create the form with the current groups
 				form := huh.NewForm(groups...).
 					WithTheme(huh.ThemeCharm()).
@@ -126,10 +125,10 @@ func (c *GoodCommiter) RunForm(accessible bool) error {
 	return err
 }
 
-func (c *GoodCommiter) RunPostProcessing() error {
+func (c *goodCommiter) RunPostProcessing() error {
 	for i := 0; i < 100; i++ {
 		for _, m := range c.modules {
-			if m.GetConfig().Priority != i {
+			if m.Config().Priority != i {
 				continue
 			}
 			if err := m.PostProcess(&c.commit); err != nil {
@@ -140,7 +139,7 @@ func (c *GoodCommiter) RunPostProcessing() error {
 	return nil
 }
 
-func (c *GoodCommiter) PreviewCommit() {
+func (c *goodCommiter) PreviewCommit() {
 	var sb strings.Builder
 	keywordStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700"))
 	alertStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
@@ -195,7 +194,7 @@ func (c *GoodCommiter) PreviewCommit() {
 	)
 }
 
-func (c *GoodCommiter) RenderMessage() string {
+func (c *goodCommiter) RenderMessage() string {
 	var scopeStr string
 	if c.commit.Scope != "" {
 		scopeStr = fmt.Sprintf("(%s)", c.commit.Scope)
@@ -224,19 +223,24 @@ func (c *GoodCommiter) RenderMessage() string {
 	return commitMsg
 }
 
-func New(modules []module.Module) (*GoodCommiter, error) {
-	commit := commit.Config{Extras: make(map[string]*string)}
+func (c *goodCommiter) LoadModules(modules []gc.Module) error {
 	// run InitCommitInfo from all modules in priority order
 	for i := 0; i < 100; i++ {
 		for _, m := range modules {
-			if m.GetConfig().Priority > i {
+			if m.Config().Priority > i {
 				continue
 			}
-			if err := m.InitCommitInfo(&commit); err != nil {
-				return nil, err
+			if err := m.InitCommitInfo(&c.commit); err != nil {
+				return err
 			}
 		}
 	}
+	c.modules = modules
+	return nil
+}
 
-	return &GoodCommiter{modules, commit}, nil
+func New() (*goodCommiter, error) {
+	commit := gc.Commit{Extras: make(map[string]*string)}
+
+	return &goodCommiter{modules: []gc.Module{}, commit: commit}, nil
 }
