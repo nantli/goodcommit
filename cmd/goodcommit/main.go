@@ -10,6 +10,9 @@ Flags:
 
 	--accessible		Enable accessible mode
 	--config			Path to a configuration file
+	--retry			Retry commit with the last saved commit message
+	-m				Dry run mode, do not execute commit
+	-h				Show this help message
 */
 package main
 
@@ -21,6 +24,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/charmbracelet/huh"
 	gc "github.com/nantli/goodcommit"
 	"github.com/nantli/goodcommit/body"
 	"github.com/nantli/goodcommit/breaking"
@@ -38,15 +42,69 @@ import (
 
 func main() {
 
-	// Get config path from env var or flag
+	// Get flags
 	configPath := os.Getenv("GOODCOMMIT_CONFIG_PATH")
 	flag.StringVar(&configPath, "config", configPath, "Path to a configuration file")
-	flag.Parse()
-
-	// Get accessible flag from env var or flag
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 	flag.BoolVar(&accessible, "accessible", accessible, "Enable accessible mode")
+	dryRun := flag.Bool("m", false, "Dry run mode, do not execute commit")
+	retry := flag.Bool("retry", false, "Retry commit with the last saved commit message")
+	help := flag.Bool("h", false, "Show this help message")
 	flag.Parse()
+
+	// Show help message and exit if -h flag is set
+	if *help {
+		flag.Usage()
+		os.Exit(0)
+	}
+
+	// Ensure -m and --retry flags are not used together
+	if *retry && *dryRun {
+		fmt.Println("Error: -m and --retry cannot be used together.")
+		os.Exit(1)
+	}
+
+	// If --retry is used, read the commit message from the temporary file and execute the commit
+	if *retry {
+		messageBytes, err := os.ReadFile(".goodcommit_msg.tmp")
+		if err != nil {
+			fmt.Printf("Error reading saved commit message: %s\n", err)
+			os.Exit(1)
+		}
+		message := string(messageBytes)
+
+		// Ask for confirmation before executing the commit
+		var confirm bool
+		err = huh.NewConfirm().
+			Title("Commit with the following message?").
+			Description(message).
+			Value(&confirm).
+			Run()
+
+		if err != nil {
+			fmt.Printf("Error during confirmation: %s\n", err)
+			os.Exit(1)
+		}
+
+		if confirm {
+			cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
+			cmd := exec.Command("sh", "-c", cmdStr)
+			err = cmd.Run()
+			if err != nil {
+				fmt.Printf("Error executing commit command: %s\n", err)
+				os.Exit(1)
+			}
+			fmt.Println("Commit successful with the last saved commit message.")
+			// Remove the temporary file
+			err = os.Remove(".goodcommit_msg.tmp")
+			if err != nil {
+				fmt.Printf("Error removing temporary file: %s\n", err)
+			}
+		} else {
+			fmt.Println("Commit canceled.")
+		}
+		os.Exit(0)
+	}
 
 	// Load modules
 	modules := []gc.Module{
@@ -90,12 +148,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Commit changes, execute command
-	cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
-	cmd := exec.Command("sh", "-c", cmdStr)
-	err = cmd.Run()
-	if err != nil {
-		fmt.Printf("Error executing command: %s\n", err)
-		os.Exit(1)
+	// Commit changes, execute command if not in dry run mode
+	if !*dryRun && !*retry {
+		cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
+		cmd := exec.Command("sh", "-c", cmdStr)
+		err = cmd.Run()
+		if err != nil {
+			// Save commit message to temporary file on error
+			err = os.WriteFile(".goodcommit_msg.tmp", []byte(message), 0644)
+			if err != nil {
+				fmt.Printf("Error saving commit message ('goodcommit --retry' won't work 😢): %s\n", err)
+			}
+			fmt.Printf("Error executing command: %s\n", err)
+			os.Exit(1)
+		}
+	} else if *dryRun {
+		fmt.Println("Dry run mode, commit not executed.")
 	}
 }

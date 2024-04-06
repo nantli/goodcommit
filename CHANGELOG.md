@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Retry commit with the last saved commit message.
+- Add dry run flag to not commit the message.
+
 ## [1.0.0]
 
 ### Added
