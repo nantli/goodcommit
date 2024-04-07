@@ -18,10 +18,10 @@ To build `goodcommit`, ensure you have Go installed on your system. Then, follow
    ```bash
    go build -o goodcommit ./cmd/main.go
    ```
-4. Run `goodcommit`:
+4. Run `goodcommit` to commit your changes (use `--config` to specify the example config file):
    ```bash
    git add .
-   ./goodcommit
+   ./goodcommit --config ./configs/config.example.json
    ```
 
 ### Specifying a Configuration File

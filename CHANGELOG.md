@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0]
+
 ### Added
 
 - Retry commit with the last saved commit message.
@@ -33,5 +35,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Use environment variable to set configuration file path, with `--config` flag taking precedence if both are provided. ([#14](https://github.com/nantli/goodcommit/pull/14))
 
 [unreleased]: https://github.com/nantli/goodcommit/compare/v1.0.0...HEAD
+[1.1.0]: https://github.com/nantli/goodcommit/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/nantli/goodcommit/compare/v0.0.0...v1.0.0
-
