@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- Now `scopes` module supports multiple scopes per commit.
+- Now `scopes` module supports multiple scopes per commit. ([#20](https://github.com/nantli/goodcommit/pull/20))
 
 ## [1.1.0]
 
