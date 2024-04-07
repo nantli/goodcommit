@@ -5,7 +5,8 @@
             "page": 1,
             "position": 1,
             "pinned": true,
-            "active": true
+            "active": true,
+            "path": "./.repo/configs/logo.txt"
         },
         {
             "name": "greetings",
