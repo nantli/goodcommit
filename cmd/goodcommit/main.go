@@ -11,6 +11,7 @@ Flags:
 	--accessible		Enable accessible mode
 	--config			Path to a configuration file
 	--retry			Retry commit with the last saved commit message
+	--edit			Edit the last saved commit message
 	-m				Dry run mode, do not execute commit
 	-h				Show this help message
 */
@@ -50,11 +51,37 @@ func main() {
 	dryRun := flag.Bool("m", false, "Dry run mode, do not execute commit")
 	retry := flag.Bool("retry", false, "Retry commit with the last saved commit message")
 	help := flag.Bool("h", false, "Show this help message")
+	edit := flag.Bool("edit", false, "Edit the last saved commit message")
 	flag.Parse()
 
 	// Show help message and exit if -h flag is set
 	if *help {
 		flag.Usage()
+		os.Exit(0)
+	}
+
+	// Handle the --edit flag
+	if *edit {
+		editor := os.Getenv("EDITOR")
+		if editor == "" {
+			editor = "vim" // Default to vim if EDITOR env var is not set
+		}
+
+		// Construct the command to open the editor with the temporary commit message file
+		cmd := exec.Command(editor, ".goodcommit_msg.tmp")
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		// Execute the command to open the editor
+		err := cmd.Run()
+		if err != nil {
+			fmt.Printf("Error opening editor: %s\n", err)
+			os.Exit(1)
+		}
+
+		// Exit after editing is done
+		fmt.Println("Commit message edited, now run 'goodcommit --retry' to commit.")
 		os.Exit(0)
 	}
 
@@ -89,9 +116,10 @@ func main() {
 		if confirm {
 			cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
 			cmd := exec.Command("sh", "-c", cmdStr)
-			err = cmd.Run()
+			// Run the command and capture the combined stdout and stderr
+			output, err := cmd.CombinedOutput()
 			if err != nil {
-				fmt.Printf("Error executing commit command: %s\n", err)
+				fmt.Printf("Error executing commit command: %s\nOutput:\n%s\n", err, output)
 				os.Exit(1)
 			}
 			fmt.Println("Commit successful with the last saved commit message.")
@@ -152,14 +180,16 @@ func main() {
 	if !*dryRun && !*retry {
 		cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
 		cmd := exec.Command("sh", "-c", cmdStr)
-		err = cmd.Run()
+		// Run the command and capture the combined stdout and stderr
+		output, err := cmd.CombinedOutput()
 		if err != nil {
 			// Save commit message to temporary file on error
-			err = os.WriteFile(".goodcommit_msg.tmp", []byte(message), 0644)
-			if err != nil {
-				fmt.Printf("Error saving commit message ('goodcommit --retry' won't work 😢): %s\n", err)
+			errSave := os.WriteFile(".goodcommit_msg.tmp", []byte(message), 0644)
+			if errSave != nil {
+				fmt.Printf("Error saving commit message ('goodcommit --retry' won't work 😢): %s\n", errSave)
 			}
-			fmt.Printf("Error executing command: %s\n", err)
+			// Print the combined stdout and stderr to give feedback to the user
+			fmt.Printf("Error executing command: %s\nOutput:\n%s\n", err, output)
 			os.Exit(1)
 		}
 	} else if *dryRun {

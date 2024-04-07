@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Retry commit with the last saved commit message.
 - Add dry run flag to not commit the message.
+- Add edit flag to edit the last saved commit message.
 
 ## [1.0.0]
 
