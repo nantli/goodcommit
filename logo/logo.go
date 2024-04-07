@@ -1,6 +1,9 @@
 package logo
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/charmbracelet/huh"
 	gc "github.com/nantli/goodcommit"
 )
@@ -8,24 +11,29 @@ import (
 const MODULE_NAME = "logo"
 
 type logo struct {
-	config gc.ModuleConfig
+	config   gc.ModuleConfig
+	asciiArt string // Add this line
 }
 
 func (l *logo) LoadConfig() error {
+	if l.config.Path != "" {
+		raw, err := os.ReadFile(l.config.Path)
+		if err != nil {
+			return fmt.Errorf("failed to read logo file: %w", err)
+		}
+		l.asciiArt = string(raw)
+	}
 	return nil
 }
 
 func (l *logo) NewField(commit *gc.Commit) (huh.Field, error) {
-	asciiArt := `                          
-		 ____ ____ ____ ____ ____ ____      
-		||N |||a |||n |||t |||l |||i ||     
-		||__|||__|||__|||__|||__|||__||     
-		|/__\|/__\|/__\|/__\|/__\|/__\|     
+	if l.asciiArt == "" {
+		l.asciiArt = ` 
 	┌─────────────────────────────────────┐ 
 	│  You're gonna like this commit...   │ 
-	└─────────────────────────────────────┘ 
-	`
-	return huh.NewNote().Title(asciiArt), nil
+	└─────────────────────────────────────┘` // default ascii art
+	}
+	return huh.NewNote().Title(l.asciiArt), nil
 }
 
 func (l *logo) PostProcess(commit *gc.Commit) error {
@@ -54,5 +62,8 @@ func (l *logo) InitCommitInfo(commit *gc.Commit) error {
 }
 
 func New() gc.Module {
-	return &logo{config: gc.ModuleConfig{Name: MODULE_NAME}}
+	return &logo{
+		config:   gc.ModuleConfig{Name: MODULE_NAME},
+		asciiArt: "", // Initialize with an empty string
+	}
 }
