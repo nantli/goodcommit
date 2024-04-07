@@ -68,22 +68,32 @@ func (s *scopes) NewField(commit *gc.Commit) (huh.Field, error) {
 		return nil, fmt.Errorf("no valid scope options found for commit type: %s", commit.Type)
 	}
 
-	return huh.NewSelect[string]().
+	// Adjusted to use MultiSelect and to work with a slice of strings for multiple selections
+	return huh.NewMultiSelect[string]().
 		Options(typeOptions...).
-		Title("🪱・Select a Commit Scope").
-		Description("Additional contextual information about the changes.\n").
-		Value(&commit.Scope), nil
+		Title("🪱・Select Commit Scopes").
+		Description("Additional contextual information about the changes. Multiple selections allowed.\n").
+		Value(&commit.Scopes), nil // commit.Scopes should be a slice of strings
 }
 
 func (s *scopes) PostProcess(commit *gc.Commit) error {
-	if commit.Scope == "" && s.IsActive() {
-		return fmt.Errorf("commit scope is required")
+	scopeHeader := "SCOPE: "
+	scopeEmojis := ""
+	if len(commit.Scopes) == 0 && s.IsActive() {
+		commit.Scope = ""
+		return nil
 	}
-	scopeId := commit.Scope
-	commit.Scope = s.item(scopeId).Emoji
-	if scopeId != "empty" {
-		commit.Body = fmt.Sprintf("SCOPE: %s\n%s", s.item(scopeId).Name, commit.Body)
+	if len(commit.Scopes) > 1 {
+		scopeHeader = "SCOPES: "
 	}
+	for _, scopeId := range commit.Scopes {
+		if scopeId != "empty" {
+			scopeHeader += s.item(scopeId).Name + " "
+			scopeEmojis += s.item(scopeId).Emoji
+		}
+	}
+	commit.Scope = scopeEmojis
+	commit.Body = scopeHeader + "\n" + commit.Body
 
 	return nil
 }
