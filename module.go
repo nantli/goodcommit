@@ -5,6 +5,7 @@ import "github.com/charmbracelet/huh"
 type Commit struct {
 	Type         string
 	Scope        string
+	Scopes       []string
 	Description  string
 	Body         string
 	Footer       string

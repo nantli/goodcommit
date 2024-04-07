@@ -1,4 +1,4 @@
-# You're gonna like this commit, he's all right. He's a commit
+# You're gonna like this commit, he's all right. He's a goodcommit
 
 Welcome to `goodcommit` - a customizable commit message generator that ensures your commit messages follow best practices and are consistent across your projects.
 
