@@ -1,5 +1,5 @@
-// Package breaking provides a module for goodcommit that prompts the user to indicate
-// whether the commit introduces a breaking change.
+// Package breaking provides a github.com/nantli/goodcommit module for indicating breaking changes.
+// It prompts the user to indicate whether the commit introduces a breaking change.
 package breaking
 
 import (
@@ -7,6 +7,7 @@ import (
 	gc "github.com/nantli/goodcommit"
 )
 
+// MODULE_NAME is the name of the module and should be used as the name of the module in the config.json file.
 const MODULE_NAME = "breaking"
 
 type breaking struct {
@@ -17,8 +18,13 @@ func (b *breaking) LoadConfig() error {
 	return nil
 }
 
-// NewField returns a new Confirm field for the user to indicate whether the commit introduces a breaking change.
+// NewField returns a new huh.Confirm field for indicating breaking changes.
+// Only appears if the commit type is "feat" or "fix".
 func (b *breaking) NewField(commit *gc.Commit) (huh.Field, error) {
+
+	if commit.Type != "feat" && commit.Type != "fix" {
+		return nil, nil
+	}
 
 	return huh.NewConfirm().
 		Title("☎️・Does this commit introduce a Breaking Change?").
@@ -46,7 +52,7 @@ func (b *breaking) Name() string {
 }
 
 func (b *breaking) InitCommitInfo(commit *gc.Commit) error {
-	// No initialization needed for this module.
+	// No initialization of the commit is done by the breaking module.
 	return nil
 }
 
@@ -54,6 +60,8 @@ func (b *breaking) IsActive() bool {
 	return b.config.Active
 }
 
+// New returns a new instance of the breaking module.
+// The breaking module is a github.com/nantli/goodcommit module that is used to indicate breaking changes introduced by a commit.
 func New() gc.Module {
 	return &breaking{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }
