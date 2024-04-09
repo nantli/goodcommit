@@ -43,24 +43,28 @@ import (
 
 func main() {
 
-	// Get flags
+	// Get configuration path from environment variable or flag
 	configPath := os.Getenv("GOODCOMMIT_CONFIG_PATH")
 	flag.StringVar(&configPath, "config", configPath, "Path to a configuration file")
+
+	// Get accessibility option from environment variable or flag
 	accessible, _ := strconv.ParseBool(os.Getenv("ACCESSIBLE"))
 	flag.BoolVar(&accessible, "accessible", accessible, "Enable accessible mode")
+
+	// Get dry-run, retry, help and edit options from flags
 	dryRun := flag.Bool("m", false, "Dry run mode, do not execute commit")
 	retry := flag.Bool("retry", false, "Retry commit with the last saved commit message")
 	help := flag.Bool("h", false, "Show this help message")
 	edit := flag.Bool("edit", false, "Edit the last saved commit message")
 	flag.Parse()
 
-	// Show help message and exit if -h flag is set
+	// Show help message if -h flag is set
 	if *help {
 		flag.Usage()
 		os.Exit(0)
 	}
 
-	// Handle the --edit flag
+	// If the --edit flag is set, open the editor with the temporary commit message file (previously saved on .goodcommit_msg.tmp, after an errored run)
 	if *edit {
 		editor := os.Getenv("EDITOR")
 		if editor == "" {
@@ -73,14 +77,12 @@ func main() {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
-		// Execute the command to open the editor
 		err := cmd.Run()
 		if err != nil {
 			fmt.Printf("Error opening editor: %s\n", err)
 			os.Exit(1)
 		}
 
-		// Exit after editing is done
 		fmt.Println("Commit message edited, now run 'goodcommit --retry' to commit.")
 		os.Exit(0)
 	}
@@ -91,7 +93,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// If --retry is used, read the commit message from the temporary file and execute the commit
+	// If the --retry flag is used, read the commit message from the temporary file (.goodcommit_msg.tmp) and execute the commit
 	if *retry {
 		messageBytes, err := os.ReadFile(".goodcommit_msg.tmp")
 		if err != nil {
@@ -100,7 +102,7 @@ func main() {
 		}
 		message := string(messageBytes)
 
-		// Ask for confirmation before executing the commit
+		// Show the commit message and ask for confirmation
 		var confirm bool
 		err = huh.NewConfirm().
 			Title("Commit with the following message?").
@@ -116,14 +118,17 @@ func main() {
 		if confirm {
 			cmdStr := fmt.Sprintf("git commit -m \"%s\"", strings.ReplaceAll(message, "\"", "\\\""))
 			cmd := exec.Command("sh", "-c", cmdStr)
+
 			// Run the command and capture the combined stdout and stderr
+			// so that user can see possible errors outputed to those from git hooks for example.
 			output, err := cmd.CombinedOutput()
 			if err != nil {
 				fmt.Printf("Error executing commit command: %s\nOutput:\n%s\n", err, output)
 				os.Exit(1)
 			}
 			fmt.Println("Commit successful with the last saved commit message.")
-			// Remove the temporary file
+
+			// Remove the temporary file now that the changes are committed
 			err = os.Remove(".goodcommit_msg.tmp")
 			if err != nil {
 				fmt.Printf("Error removing temporary file: %s\n", err)
@@ -133,6 +138,8 @@ func main() {
 		}
 		os.Exit(0)
 	}
+
+	// Otherwhise start the usual goodcommit flow
 
 	// Load modules
 	modules := []gc.Module{

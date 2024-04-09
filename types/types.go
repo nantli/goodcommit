@@ -1,3 +1,6 @@
+// Package types provides a github.com/nantli/goodcommit module that can be used to select the type of the commit.
+// It presents the user with a selection of types and allows them to select one.
+// The selected type is then added to the commit title.
 package types
 
 import (
@@ -10,15 +13,16 @@ import (
 	gc "github.com/nantli/goodcommit"
 )
 
+// item is the structure for each entry in the types configuration file.
 type item struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Emoji       string   `json:"emoji"`
-	Conditional []string `json:"conditional"`
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Emoji       string `json:"emoji"`
 }
 
+// MODULE_NAME is the name of the module and should be used as the name of the module in the config.json file.
 const MODULE_NAME = "types"
 
 type types struct {
@@ -26,6 +30,20 @@ type types struct {
 	Items  []item `json:"types"`
 }
 
+// LoadConfig loads the types configuration file.
+// Example config file:
+//
+//	{
+//		"types": [
+//			{
+//				"id": "feat",
+//				"name": "Feature",
+//				"title": "A new feature",
+//				"description": "A new feature",
+//				"emoji": "✨"
+//			}
+//		]
+//	}
 func (t *types) LoadConfig() error {
 
 	if t.config.Path == "" {
@@ -46,6 +64,7 @@ func (t *types) LoadConfig() error {
 	return nil
 }
 
+// NewField returns a huh.Select field that allows the user to select the type of the commit.
 func (t *types) NewField(commit *gc.Commit) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
@@ -75,14 +94,6 @@ func (t *types) SetConfig(config gc.ModuleConfig) {
 	t.config = config
 }
 
-func (s *types) Debug() error {
-	// print configuration and items in a human readable format
-	fmt.Println(s.config)
-	fmt.Println(s.Items)
-
-	return nil
-}
-
 func (t *types) Name() string {
 	return MODULE_NAME
 }
@@ -95,6 +106,9 @@ func (t *types) IsActive() bool {
 	return t.config.Active
 }
 
+// New returns a new instance of the types module.
+// The types module is a github.com/nantli/goodcommit module that can be used to select the type of the commit.
+// The selected type is then added to the commit title.
 func New() gc.Module {
 	return &types{config: gc.ModuleConfig{Name: MODULE_NAME}, Items: []item{}}
 }

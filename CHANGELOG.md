@@ -6,10 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.0]
+
 ### Added
 
 - Now `scopes` module supports multiple scopes per commit. ([#20](https://github.com/nantli/goodcommit/pull/20))
 - Now `logo` module supports custom ASCII art. ([#22](https://github.com/nantli/goodcommit/pull/22))
+
+### Changed
+
+- Now `breaking` module is active only for commits of type `feat` and `fix`.
 
 ## [1.1.0]
 

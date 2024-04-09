@@ -1,7 +1,6 @@
-// Package greetings provides a module for goodcommit that handles initial greetings.
-//
-// The greetings module is intended to be the first module in goodcommit. It displays a greeting
-// message and displays staged files to the user, asking for confirmation to proceed with the commit.
+// Package greetings provides a github.com/nantli/goodcommit module that handles initial greetings.
+// It is intended to be the first module in goodcommit. It displays a greeting message
+// and displays staged files to the user, asking for confirmation to proceed with the commit.
 package greetings
 
 import (
@@ -14,6 +13,7 @@ import (
 	gc "github.com/nantli/goodcommit"
 )
 
+// MODULE_NAME is the name of the module and should be used as the name of the module in the config.json file.
 const MODULE_NAME = "greetings"
 
 type greetings struct {
@@ -24,6 +24,8 @@ func (g *greetings) LoadConfig() error {
 	return nil
 }
 
+// NewField returns a huh.Confirm field that asks the user to confirm the staged files.
+// If the user confirms, the flow continues. If the user does not confirm, the commit is aborted.
 func (g *greetings) NewField(commit *gc.Commit) (huh.Field, error) {
 	stagedFiles, err := g.getStagedFiles()
 	if err != nil {
@@ -48,7 +50,6 @@ func (g *greetings) NewField(commit *gc.Commit) (huh.Field, error) {
 }
 
 func (g *greetings) PostProcess(commit *gc.Commit) error {
-	// This module does not modify the commit info, so no post-processing is needed.
 	return nil
 }
 
@@ -76,6 +77,7 @@ func (g *greetings) getStagedFiles() (string, error) {
 }
 
 func (g *greetings) InitCommitInfo(commit *gc.Commit) error {
+	// No initialization of the commit is done by this module
 	return nil
 }
 
@@ -83,6 +85,9 @@ func (g *greetings) IsActive() bool {
 	return g.config.Active
 }
 
+// New returns a new instance of the greetings module.
+// The greetings module is a github.com/nantli/goodcommit module that shows a greeting message
+// and staged files to the user.
 func New() gc.Module {
 	return &greetings{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

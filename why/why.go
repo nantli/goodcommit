@@ -1,5 +1,6 @@
-// Package why provides a module for goodcommit that prompts the user
-// to explain why the change was needed.
+// Package why provides a github.com/nantli/goodcommit module that can be used to prompt the user
+// to explain why the change was needed. It presents the user with a text input field and
+// is then added to the commit body.
 package why
 
 import (
@@ -18,11 +19,10 @@ type why struct {
 }
 
 func (w *why) LoadConfig() error {
-	// Load any necessary configuration for the Why module.
 	return nil
 }
 
-// NewField returns a new Input field for the user to explain why the change was needed.
+// NewField returns a new huh.Input field for the user to explain why the change was needed.
 func (w *why) NewField(commit *gc.Commit) (huh.Field, error) {
 	return huh.NewInput().
 		Title("❔・Why was this change needed?").
@@ -60,6 +60,7 @@ func (w *why) Name() string {
 	return MODULE_NAME
 }
 
+// InitCommitInfo initializes the commit with a placeholder for the why field in the extras map.
 func (w *why) InitCommitInfo(commit *gc.Commit) error {
 	placeholder := ""
 	commit.Extras["why"] = &placeholder
@@ -70,6 +71,9 @@ func (w *why) IsActive() bool {
 	return w.config.Active
 }
 
+// New returns a new instance of the why module.
+// The why module is a github.com/nantli/goodcommit module that can be used to prompt the user
+// to explain why the change was needed.
 func New() gc.Module {
 	return &why{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }

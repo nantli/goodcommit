@@ -1,3 +1,5 @@
+// Package signedoffby provides a github.com/nantli/goodcommit module that can be used to add a "Signed-off-by" line to the commit.
+// It does this by gathering the user's name and email from the git config.
 package signedoffby
 
 import (
@@ -9,6 +11,7 @@ import (
 	gc "github.com/nantli/goodcommit"
 )
 
+// MODULE_NAME is the name of the module and should be used as the name of the module in the config.json file.
 const MODULE_NAME = "signedoffby"
 
 type signedOffBy struct {
@@ -16,7 +19,6 @@ type signedOffBy struct {
 }
 
 func (s *signedOffBy) LoadConfig() error {
-	// Load any necessary configuration. For this module, it might be inactive or active.
 	return nil
 }
 
@@ -25,6 +27,8 @@ func (s *signedOffBy) NewField(commit *gc.Commit) (huh.Field, error) {
 	return nil, nil
 }
 
+// PostProcess is called after the user has completed the goodcommit form.
+// It adds the "Signed-off-by" line to the commit footer.
 func (s *signedOffBy) PostProcess(commit *gc.Commit) error {
 	// Execute the command to get the user's name from Git config
 	nameCmd := exec.Command("git", "config", "--get", "user.name")
@@ -68,10 +72,11 @@ func (s *signedOffBy) IsActive() bool {
 }
 
 func (s *signedOffBy) InitCommitInfo(commit *gc.Commit) error {
-	// Initialize any necessary fields in CommitInfo.
 	return nil
 }
 
+// New returns a new instance of the signedoffby module.
+// The signedoffby module is a github.com/nantli/goodcommit module that can be used to add a "Signed-off-by" line to the commit.
 func New() gc.Module {
 	return &signedOffBy{}
 }

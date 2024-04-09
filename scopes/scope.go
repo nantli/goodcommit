@@ -1,3 +1,6 @@
+// Package scopes provides a github.com/nantli/goodcommit module that allows the user to select scopes for the commit.
+// It presents a multi-select menu with the available scopes.
+// The selected scopes are then added to the commit title and body.
 package scopes
 
 import (
@@ -10,15 +13,17 @@ import (
 	gc "github.com/nantli/goodcommit"
 )
 
+// item is the structure for each entry in the scopes configuration file.
 type item struct {
 	Id          string   `json:"id"`
 	Name        string   `json:"name"`
 	Title       string   `json:"title"`
 	Description string   `json:"description"`
 	Emoji       string   `json:"emoji"`
-	Conditional []string `json:"conditional"`
+	Conditional []string `json:"conditional"` // The types of commits that this scope is valid for.
 }
 
+// MODULE_NAME is the name of the module and should be used as the name of the module in the config.json file.
 const MODULE_NAME = "scopes"
 
 type scopes struct {
@@ -35,6 +40,20 @@ func (s *scopes) item(id string) item {
 	return item{}
 }
 
+// LoadConfig loads the scopes configuration file.
+// Example:
+//
+//	{
+//		"scopes": [
+//			{
+//				"id": "modules",
+//				"emoji": "📦",
+//				"name": "Modules",
+//				"description": "Use this when changes are made to modules",
+//				"conditional": ["feat", "fix", "chore"]
+//			}
+//		]
+//	}
 func (s *scopes) LoadConfig() error {
 
 	if s.config.Path == "" {
@@ -55,6 +74,8 @@ func (s *scopes) LoadConfig() error {
 	return nil
 }
 
+// NewField returns a huh.MultiSelect field that allows the user to select the scopes for the commit.
+// The options are built based on the selected commit type.
 func (s *scopes) NewField(commit *gc.Commit) (huh.Field, error) {
 
 	var typeOptions []huh.Option[string]
@@ -68,7 +89,6 @@ func (s *scopes) NewField(commit *gc.Commit) (huh.Field, error) {
 		return nil, fmt.Errorf("no valid scope options found for commit type: %s", commit.Type)
 	}
 
-	// Adjusted to use MultiSelect and to work with a slice of strings for multiple selections
 	return huh.NewMultiSelect[string]().
 		Options(typeOptions...).
 		Title("🪱・Select Commit Scopes").
@@ -106,14 +126,6 @@ func (s *scopes) SetConfig(config gc.ModuleConfig) {
 	s.config = config
 }
 
-func (s *scopes) Debug() error {
-	// print configuration and items in a human readable format
-	fmt.Println(s.config)
-	fmt.Println(s.Items)
-
-	return nil
-}
-
 func (s *scopes) Name() string {
 	return MODULE_NAME
 }
@@ -126,6 +138,9 @@ func (s *scopes) IsActive() bool {
 	return s.config.Active
 }
 
+// New returns a new instance of the scopes module.
+// The scopes module is a github.com/nantli/goodcommit module that allows the user to select scopes for the commit.
+// The selected scopes are then added to the commit title and body.
 func New() gc.Module {
 	return &scopes{config: gc.ModuleConfig{Name: MODULE_NAME}, Items: []item{}}
 }

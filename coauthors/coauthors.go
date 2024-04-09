@@ -1,5 +1,6 @@
-// Package coauthors provides a module for goodcommit that allows the user to select
-// co-authors for the commit from a predefined list.
+// Package coauthors provides a github.com/nantli/goodcommit module for selecting co-authors.
+// It presents the user with a multi-select field for selecting co-authors from a predefined list.
+// The selected co-authors are then added to the commit body.
 package coauthors
 
 import (
@@ -13,15 +14,14 @@ import (
 	gc "github.com/nantli/goodcommit"
 )
 
+// item is the structure for each entry in the co-authors configuration file.
 type item struct {
-	Id          string   `json:"id"`
-	Name        string   `json:"name"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Emoji       string   `json:"emoji"`
-	Conditional []string `json:"conditional"`
+	Id    string `json:"id"`
+	Name  string `json:"name"`
+	Emoji string `json:"emoji"`
 }
 
+// MODULE_NAME is the name of the module and should be used as the name of the module in the config.json file.
 const MODULE_NAME = "coauthors"
 
 type coAuthors struct {
@@ -38,6 +38,18 @@ func (c *coAuthors) item(id string) item {
 	return item{}
 }
 
+// LoadConfig loads the co-authors configuration file.
+// Example config file:
+//
+//	{
+//		"coauthors": [
+//			{
+//				"id": "nantli@nantli.dev",
+//				"name": "Nantli",
+//				"emoji": "🤓"
+//			}
+//		]
+//	}
 func (c *coAuthors) LoadConfig() error {
 	if c.config.Path == "" {
 		return nil
@@ -55,7 +67,8 @@ func (c *coAuthors) LoadConfig() error {
 	return nil
 }
 
-// NewField returns a MultiSelect field with options for each co-author.
+// NewField returns a huh.MultiSelect field with options for each co-author.
+// The commit author is excluded from the list of co-authors.
 func (c *coAuthors) NewField(commit *gc.Commit) (huh.Field, error) {
 
 	// Get the user's email
@@ -91,18 +104,19 @@ func (c *coAuthors) NewField(commit *gc.Commit) (huh.Field, error) {
 }
 
 func (c *coAuthors) PostProcess(commit *gc.Commit) error {
+	// Build the co-authors string
 	coAuthors := commit.CoAuthoredBy
 	for i, coAuthor := range coAuthors {
 		coAuthors[i] = c.item(coAuthor).Name + " <" + c.item(coAuthor).Id + ">"
 	}
 	commit.CoAuthoredBy = coAuthors
-	// Sign the commit body with the co-authors Emojis
+
+	// Sign the commit body with the author and co-authors Emojis
 	emojis := []string{}
 	for _, coAuthor := range coAuthors {
 		emojis = append(emojis, c.item(coAuthor).Emoji)
 	}
 
-	// add emoji from author using emailCmd := exec.Command("git", "config", "--get", "user.email") to get mail and the serching with id
 	emailCmd := exec.Command("git", "config", "--get", "user.email")
 	email, err := emailCmd.Output()
 	if err != nil {
@@ -127,7 +141,7 @@ func (c *coAuthors) Name() string {
 }
 
 func (c *coAuthors) InitCommitInfo(commit *gc.Commit) error {
-	// No initialization needed for this module.
+	// No initialization of the commit is done by this module
 	return nil
 }
 
@@ -135,6 +149,8 @@ func (c *coAuthors) IsActive() bool {
 	return c.config.Active
 }
 
+// New returns a new instance of the co-authors module.
+// The coauthors module is a github.com/nantli/goodcommit module that allows the user to select co-authors for the commit.
 func New() gc.Module {
 	return &coAuthors{config: gc.ModuleConfig{Name: MODULE_NAME}}
 }
