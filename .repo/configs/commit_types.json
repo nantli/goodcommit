@@ -1,35 +1,34 @@
 {
     "types": [
         {
+            "emoji": "\ud83c\udf1f",
             "id": "feat",
             "name": "Feat",
-            "emoji": "🌟",
             "title": "New commit introduces a new feature"
         },
         {
+            "emoji": "\ud83d\udc1b",
             "id": "fix",
             "name": "Fix",
-            "emoji": "🐛",
             "title": "This commit patches a bug"
         },
         {
+            "emoji": "\ud83e\uddf0",
             "id": "refactor",
             "name": "Refactor",
-            "emoji": "🧰",
             "title": "Use this when improving the codebase"
         },
         {
+            "emoji": "\ud83d\udcdd",
             "id": "docs",
             "name": "Docs",
-            "emoji": "📝",
             "title": "Use this when updating documentation"
         },
         {
+            "emoji": "\ud83e\uddf0",
             "id": "chore",
             "name": "Chore",
-            "emoji": "🧰",
             "title": "For all other tasks"
         }
     ]
 }
-

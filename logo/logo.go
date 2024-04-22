@@ -34,10 +34,10 @@ func (l *logo) LoadConfig() error {
 // NewField returns a huh.Note field that displays the ascii art.
 func (l *logo) NewField(commit *gc.Commit) (huh.Field, error) {
 	if l.asciiArt == "" {
-		l.asciiArt = ` 
-	┌─────────────────────────────────────┐ 
-	│  You're gonna like this commit...   │ 
-	└─────────────────────────────────────┘` // default ascii art
+		l.asciiArt = `
+    ┌─────────────────────────────────────┐
+    │  You're gonna like this commit...   │
+    └─────────────────────────────────────┘` // default ascii art
 	}
 	return huh.NewNote().Title(l.asciiArt), nil
 }

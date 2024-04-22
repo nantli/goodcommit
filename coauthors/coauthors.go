@@ -42,13 +42,13 @@ func (c *coAuthors) item(id string) item {
 // Example config file:
 //
 //	{
-//		"coauthors": [
-//			{
-//				"id": "nantli@nantli.dev",
-//				"name": "Nantli",
-//				"emoji": "🤓"
-//			}
-//		]
+//	    "coauthors": [
+//	        {
+//	            "id": "nantli@nantli.dev",
+//	            "name": "Nantli",
+//	            "emoji": "🤓"
+//	        }
+//	    ]
 //	}
 func (c *coAuthors) LoadConfig() error {
 	if c.config.Path == "" {

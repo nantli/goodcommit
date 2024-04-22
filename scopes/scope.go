@@ -44,15 +44,15 @@ func (s *scopes) item(id string) item {
 // Example:
 //
 //	{
-//		"scopes": [
-//			{
-//				"id": "modules",
-//				"emoji": "📦",
-//				"name": "Modules",
-//				"description": "Use this when changes are made to modules",
-//				"conditional": ["feat", "fix", "chore"]
-//			}
-//		]
+//	    "scopes": [
+//	        {
+//	            "id": "modules",
+//	            "emoji": "📦",
+//	            "name": "Modules",
+//	            "description": "Use this when changes are made to modules",
+//	            "conditional": ["feat", "fix", "chore"]
+//	        }
+//	    ]
 //	}
 func (s *scopes) LoadConfig() error {
 

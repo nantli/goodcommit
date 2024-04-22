@@ -34,15 +34,15 @@ type types struct {
 // Example config file:
 //
 //	{
-//		"types": [
-//			{
-//				"id": "feat",
-//				"name": "Feature",
-//				"title": "A new feature",
-//				"description": "A new feature",
-//				"emoji": "✨"
-//			}
-//		]
+//	    "types": [
+//	        {
+//	            "id": "feat",
+//	            "name": "Feature",
+//	            "title": "A new feature",
+//	            "description": "A new feature",
+//	            "emoji": "✨"
+//	        }
+//	    ]
 //	}
 func (t *types) LoadConfig() error {
 

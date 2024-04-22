@@ -1,25 +1,43 @@
 {
     "scopes": [
         {
-            "id": "goodcommit",
-            "emoji": "🔫",
-            "name": "Goodcommit",
+            "conditional": [
+                "feat",
+                "fix",
+                "chore",
+                "refactor",
+                "docs"
+            ],
             "description": "Use this when non of the other scopes apply",
-            "conditional": ["feat","fix","chore","refactor","docs"]
+            "emoji": "\ud83d\udd2b",
+            "id": "goodcommit",
+            "name": "Goodcommit"
         },
         {
-            "id": "commiters",
-            "emoji": "⛓️",
-            "name": "Commiters",
+            "conditional": [
+                "feat",
+                "fix",
+                "chore",
+                "refactor",
+                "docs"
+            ],
             "description": "Use this when changes are made to commiters",
-            "conditional": ["feat", "fix", "chore", "refactor", "docs"]
+            "emoji": "\u26d3\ufe0f",
+            "id": "commiters",
+            "name": "Commiters"
         },
         {
-            "id": "modules",
-            "emoji": "📦",
-            "name": "Modules",
+            "conditional": [
+                "feat",
+                "fix",
+                "chore",
+                "refactor",
+                "docs"
+            ],
             "description": "Use this when changes are made to modules",
-            "conditional": ["feat", "fix", "chore", "refactor", "docs"]
+            "emoji": "\ud83d\udce6",
+            "id": "modules",
+            "name": "Modules"
         }
     ]
 }

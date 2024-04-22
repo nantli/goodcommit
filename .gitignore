@@ -1,3 +1,10 @@
 bin/
 .notebook/
+.devbox
+# used by pre-commit
+.pre-commit-config.yaml
+!.repo/.pre-commit-config.yaml
+.gitlint
+!.repo/.gitlint
+# used by goodcommit
 .goodcommit_msg.tmp

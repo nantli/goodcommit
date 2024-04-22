@@ -1,0 +1,30 @@
+{
+    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.10.5/.schema/devbox.schema.json",
+    "env": {
+        "GOBIN": "$PWD/bin",
+        "GOODCOMMIT_CONFIG_PATH": "$PWD/.repo/configs/config.json",
+        "PATH": "$PWD/bin:$PATH"
+    },
+    "packages": [
+        "go-task@latest",
+        "go@latest",
+        "python@latest",
+        "jq@latest"
+    ],
+    "shell": {
+        "init_hook": [
+            "ln -f $PWD/.repo/.pre-commit-config.yaml $PWD/.pre-commit-config.yaml",
+            "ln -f $PWD/.repo/.gitlint $PWD/.gitlint",
+            ". $VENV_DIR/bin/activate",
+            "pip3 install -r $PWD/.repo/requirements.txt",
+            "export GIT_AUTHOR_EMAIL=$(git config user.email)",
+            "export REPO_NAME=$(jq -r '.repoName' .repo/manifest.json)",
+            "export PS1='\ud83d\udd2b\u30fb$REPO_NAME \u001b[32m\ud83d\udc19\u30fb`git branch --show-current`\u001b[0m \u001b[31m\ud83d\udc1c\u30fb$GIT_AUTHOR_EMAIL\u001b[0m > '",
+            "pre-commit install",
+            "go install github.com/nantli/goodcommit/cmd/goodcommit@v1.2.0",
+            "alias gc='goodcommit'",
+            "alias pc='pre-commit run --all-files'",
+            "clear"
+        ]
+    }
+}

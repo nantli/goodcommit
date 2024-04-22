@@ -106,7 +106,7 @@ func (yc yourCommiter) RunForm(accessible bool) error {
 }
 
 func (yc yourCommiter) RunPostProcessing() error {
-    // Implement any post-processing steps 
+    // Implement any post-processing steps
 }
 
 func (yc yourCommiter) PreviewCommit() {
@@ -132,7 +132,7 @@ func main() {
     yourCommiter := yourcommiter.New()
     err = yourCommiter.LoadModules(modules)
     if err != nil {
-        fmt.Println("Error occurred while loading modules:", err) os.Exit(1) 
+        fmt.Println("Error occurred while loading modules:", err) os.Exit(1)
     }
 
     goodcommit := gc.New(yourCommiter)

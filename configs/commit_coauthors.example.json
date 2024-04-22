@@ -1,15 +1,14 @@
 {
     "coauthors": [
-      {
-        "id": "alice@example.com",
-        "name": "Alice",
-        "emoji": "🫏"
-      },
-      {
-        "id": "Carlos@example.com",
-        "name": "Carlos Ruiz",
-        "emoji": "🦔"
-      }
+        {
+            "emoji": "\ud83e\udecf",
+            "id": "alice@example.com",
+            "name": "Alice"
+        },
+        {
+            "emoji": "\ud83e\udd94",
+            "id": "Carlos@example.com",
+            "name": "Carlos Ruiz"
+        }
     ]
-  }
-
+}
