@@ -8,12 +8,12 @@ Usage:
 
 Flags:
 
-	--accessible		Enable accessible mode
-	--config			Path to a configuration file
-	--retry			Retry commit with the last saved commit message
-	--edit			Edit the last saved commit message
-	-m				Dry run mode, do not execute commit
-	-h				Show this help message
+	--accessible        Enable accessible mode
+	--config            Path to a configuration file
+	--retry         Retry commit with the last saved commit message
+	--edit          Edit the last saved commit message
+	-m              Dry run mode, do not execute commit
+	-h              Show this help message
 */
 package main
 

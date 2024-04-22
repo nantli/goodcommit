@@ -1,85 +1,88 @@
 {
     "activeModules": [
         {
+            "active": true,
             "name": "logo",
             "page": 1,
-            "position": 1,
             "pinned": true,
-            "active": true
+            "position": 1
         },
         {
+            "active": true,
             "name": "greetings",
             "page": 1,
-            "position": 2,
-            "active": true
+            "position": 2
         },
         {
+            "active": true,
+            "checkpoint": true,
             "name": "types",
             "page": 1,
-            "position": 3,
-            "active": true,
             "path": "./configs/commit_types.example.json",
-            "checkpoint": true
+            "position": 3
         },
         {
+            "active": true,
+            "dependencies": [
+                "types"
+            ],
             "name": "scopes",
             "page": 2,
-            "position": 2,
-            "active": true,
             "path": "./configs/commit_scopes.example.json",
-            "dependencies": ["types"],
+            "position": 2,
             "priority": 4
         },
         {
+            "active": true,
             "name": "description",
             "page": 3,
-            "position": 1,
-            "active": true
+            "position": 1
         },
         {
+            "active": true,
             "name": "why",
             "page": 3,
             "position": 2,
-            "active": true,
             "priority": 3
         },
         {
+            "active": true,
             "name": "body",
             "page": 3,
             "position": 3,
-            "active": true,
             "priority": 2
         },
         {
+            "active": true,
+            "checkpoint": true,
             "name": "breaking",
             "page": 3,
             "position": 4,
-            "active": true,
-            "priority": 5,
-            "checkpoint": true
+            "priority": 5
         },
         {
+            "active": true,
+            "dependencies": [
+                "breaking"
+            ],
             "name": "breakingmsg",
             "page": 4,
             "position": 1,
-            "active": true,
-            "priority": 6,
-            "dependencies": ["breaking"]
+            "priority": 6
         },
         {
+            "active": true,
             "name": "coauthors",
             "page": 5,
-            "position": 1,
-            "active": true,
             "path": "./configs/commit_coauthors.example.json",
+            "position": 1,
             "priority": 20
         },
         {
-            "name": "signedoffby",
             "active": true,
+            "name": "signedoffby",
             "page": 4,
             "position": 1
         }
     ]
 }
-
