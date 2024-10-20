@@ -35,6 +35,7 @@ import (
 	"github.com/nantli/goodcommit/goodcommiter"
 	"github.com/nantli/goodcommit/greetings"
 	"github.com/nantli/goodcommit/logo"
+	"github.com/nantli/goodcommit/scaffold"
 	"github.com/nantli/goodcommit/scopes"
 	"github.com/nantli/goodcommit/signedoffby"
 	"github.com/nantli/goodcommit/types"
@@ -154,6 +155,7 @@ func main() {
 		breakingmsg.New(),
 		coauthors.New(),
 		signedoffby.New(),
+		scaffold.New(),
 	}
 
 	// Update modules with configuration
