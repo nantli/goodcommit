@@ -83,6 +83,13 @@
             "name": "signedoffby",
             "page": 4,
             "position": 1
+        },
+        {
+            "active": true,
+            "name": "scaffold",
+            "page": 6,
+            "position": 1,
+            "priority": 7
         }
     ]
 }
